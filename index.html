@@ -84,14 +84,14 @@
         <h4 id="DesejaLigar"> </h4>
     </div>
     <div class="column3" style="background-color:#aaa;">
-        <button id="btn_Yes" onclick="YesClick()" type="button" class="btn btn-primary">Sim</button>
-        <button id="btn_No"  onclick="NoClick()"  type="button" class="btn btn-primary">Não</button>
+        <button id="btn_Yes" onclick="YesClick()" type="button" class="btn btn-primary">Yes</button>
+        <button id="btn_No"  onclick="NoClick()"  type="button" class="btn btn-primary">No</button>
     </div>
     <dialog id="Dialog_closeKnot" style="opacity: 0.3">
         <p>Close?</p>
         <form method="dialog">
-            <button class="button-close" onclick="DiagramKnot()" >Sim</button>
-            <button class="button-close" onclick="OK=0">Não</button>
+            <button class="button-close" onclick="DiagramKnot()" >Yes</button>
+            <button class="button-close" onclick="OK=0">No</button>
         </form>
     </dialog>
 </div>
@@ -257,7 +257,7 @@ function DiagramKnot() {//this function close the knot and start the questions a
     if (NC == 0){
         disabled_button("btn_Yes", "true")
         disabled_button("btn_No", "true")
-        document.getElementById("demo").innerHTML = "Determinante do nó: D = 1 <br> Polinômio de Alexander: p(t) = 1"
+        document.getElementById("demo").innerHTML = "Knot determinant: D = 1 <br> Alexander polynomial: p(t) = 1"
     }
     dNC = 2*NC
 
