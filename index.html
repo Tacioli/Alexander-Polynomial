@@ -545,8 +545,8 @@ function DiagramKnot() {//this function close the knot and start the questions a
         i = 1
         q = 1
         if p_t == 1:
-            display("Determinante do nó: D = " + str(1), target="demo", append=True)
-            display("Polinômio de Alexander: p(t) = " + str(1), target="demo", append=True)
+            display("Knot determinant: D = " + str(1), target="demo", append=True)
+            display("Alexander Polynomial: p(t) = " + str(1), target="demo", append=True)
         if p_t != 1:
             while q != 0:   #intercalando j = -i e j = i, até encontrar polinomio de alexander
                 p4=(p3.subs(J, -i)).simplify()
