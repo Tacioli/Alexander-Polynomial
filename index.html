@@ -552,14 +552,14 @@ function DiagramKnot() {//this function close the knot and start the questions a
                 p4=(p3.subs(J, -i)).simplify()
                 if p4 == 0:
                     P = p1.subs(J,-i)
-                    display("Determinante do nó: D = " + str(abs(P.subs(t, -1))), target="demo", append=True)
-                    display("Polinômio de Alexander: p(t) = " + str(P.expand()), target="demo", append=True)
+                    display("Knot determinant: D = " + str(abs(P.subs(t, -1))), target="demo", append=True)
+                    display("Alexander Polynomial: p(t) = " + str(P.expand()), target="demo", append=True)
                     break
                 p4 = (p3.subs(J, i)).simplify()
                 if p4 == 0:
                     P = p1.subs(J, i)
-                    display("Determinante do nó: D = " + str(abs(P.subs(t, -1))), target="demo", append=True)
-                    display("Polinômio de Alexander: p(t) = " + str(P.expand()), target="demo", append=True)
+                    display("Knot determinant: D = " + str(abs(P.subs(t, -1))), target="demo", append=True)
+                    display("Alexander Polynomial: p(t) = " + str(P.expand()), target="demo", append=True)
                     break
                 i = i+1
         return ma
