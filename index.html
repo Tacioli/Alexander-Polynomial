@@ -1,86 +1,66 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Alexander Polynomial via HTML and Pyscript for WEB</title>
+    <title>Plano hiperbólico de Poincaré</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    <!--<script defer onload="console.log(`${pyscript.version}`)" src="https://pyscript.net/latest/pyscript.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.03.1/pyscript.css" />
+    
+    <script defer src="https://pyscript.net/releases/2023.03.1/pyscript.js"></script>
+    
     <meta name="description" content="math.js | basic usage">
     <script src="https://unpkg.com/mathjs/lib/browser/math.js"></script>
-<!-- ===================================================================================================================================== -->
-    <style>
-        canvas {
-            border: 2px solid red;
-            display: block;
-            background-color: #3ea4c1;
-            margin-right: auto;
-         }
-    </style>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        /* Create two equal columns that floats next to each other */
-        .column {
-            float: center;
-            width: 300px;
-            padding: 10px;
-            height: 50px; /* Should be removed. Only for demonstration */
-            text-align: center;
-        }
-        .column2 {
-            float: left;
-            width: 608px;
-            padding: 10px;
-            height: 50px; /* Should be removed. Only for demonstration */
-            text-align: center;
-        }
-        .column3 {
-            float: left;
-            width: 160px;
-            padding: 10px;
-            height: 50px; /* Should be removed. Only for demonstration */
-            text-align: center;
-        }
-        #div_container {
-            width: 1070px;
-            height:600px;
-            border: 0px solid red;
-            margin: 0px auto;
-            text-align: center;
-        }
-        #Dialog_closeKnot{
-            margin: 0;
-            position: absolute;
-        }
-</style>
+    <link rel="stylesheet" href="style.css"/>
+    <script src="intersect_circle_line.js"></script>
+
+    
+<!-- ===================================================================================================================================== -->
 </head>
 <!-- ===================================================================================================================================== -->
 <body>
-<py-config>
-    packages = ["sympy"]
-</py-config>
+    <!--<py-config src="./pyscript.toml"></py-config>-->
+    <py-script src="./main.py"></py-script>
+
+    <py-config>
+        packages = ["sympy"]
+    </py-config>
 <!-- ===================================================================================================================================== -->
-<div class="div_container">
-    <h3> <strong>Instruction:</strong> ___________ Draw blu the knot diagram as a finite succession of  straight-line  segments. 
-        Let us consider that the intersections of two possible segments occur at a point internal to each segment and never at vertices. 
-        To close the knot diagram you must move the mouse over the first point. </h3>
-    <canvas id="canvas_drawing" width="1066" height="600"></canvas>
+<div id = "id_div_container" class="div_container">
+    <div id="ponto"></div>
+
+    <div id="myDIV" style="visibility: hidden;">    
+        Some instructions:
+        1. Sketch diagram with left mouse click;
+        2. Move mouse to first point to be asked close diagram;
+        3. Make choose to get knot diagram;
+        4. Click "Alexander Polynomial" button to calculate polynomial Alexander of knot;
+        5. The "Save diagram" button stores the cartesian coordinates of the vertex and the choices of the segments that passed over. 
+        6. More detailed instructions see homepage https://www.github   
+    </div>
+    
+    <canvas id="canvas_drawing" width="1155" height="650"></canvas>
     <div class="column" style="background-color:#aaa;">
         <button id="btn_PolyAlexander" py-click="PolyAlexander_OnClk()" type="button" class="btn btn-primary">
-            <span class="spinner-border spinner-border-sm"></span>
+            <span class="spinner-border text-muted"></span>
             Alexander Polynomial
         </button>
-        <button id="btn_NewKnot"       onclick="NewKnot()"              type="button" class="btn btn-primary">New knot</button>
+        <button id="btn_LoadDiagram"    onclick="LoadDiagram()" type="button" class="btn btn-primary">Load diagram</button>
+        <button id="btn_KnotSemMouse"   onclick="DiagramKnot()" type="button" class="btn btn-primary" style="display:none" >knot Sem Mouse</button>
+        <button id="btn_NewKnot"        onclick="NewKnot()"     type="button" class="btn btn-primary">New knot</button>
+        <button id="btn_Alex"           onclick="Alex()"       type="button" class="btn btn-primary" style="display:none" >Alex</button>
+        <button id="btn_save"           onclick="save()"       type="button" class="btn btn-primary" >Save diagram</button>
+        <button id="btn_help"           onclick="help()"       type="button" class="btn" style="float: right;"  >Help</button>
+        <input type="file" id="file_data_diagram" accept=".txt" style="display:none"/>
+        
     </div>
     <div class="column2" style="background-color:#bbb;">
         <h4 id="DesejaLigar"> </h4>
@@ -96,57 +76,106 @@
             <button class="button-close" onclick="OK=0">No</button>
         </form>
     </dialog>
+    <h4 id="demo"> </h4>
 </div>
 <br>
 <br>
-<h4 id="demo"> </h4>
+
 <!-- ===================================================================================================================================== -->
 
-<script>// define canvasEl etc....and the construction of diagram of knot
-    i = 0; m = 0; let  newKnot= 1; let z1, w1, xc, yc;
-    Sx = [];  // screen x coordinate of click
-    Sy = [];  // screen y coordinate of click
-    Cx = [];  // screen x converted in cartesian coordinate
-    Cy = [];
-    KnotMatrixAux=[]
-    let canvasEl = document.querySelector('#canvas_drawing') //"canvas_drawing" is the "id" of "canvas" defined in html body (<canvas> is a html object)
-    let ctx = canvasEl.getContext('2d')  //getContext('2d')  allows us drawing 2d geometry
-    ctx.fillStyle='blue'  //text color (color of number vértices)
-    let OK=0
 
+<script>//function piscar ponto
+    const ponto = document.querySelector('#ponto');
+    function piscar() {
+        ponto.style.opacity = ponto.style.opacity === '1' ? '0' : '1';
+    }
+    setInterval(piscar, 500); // Pisca a cada 500ms (ajuste a velocidade)
+</script>
+
+<script>//function help
+function help() {
+    let x = document.getElementById('myDIV');
+    if (x.style.visibility === 'hidden') {
+    x.style.visibility = 'visible';
+    } else {
+    x.style.visibility = 'hidden';
+    }
+    //console.log("INICIO__________________________________________________________________")
+    // console.log("VD = "+VD)
+    //console.log("i = "+i)
+    //console.log("m = "+m)
+    //console.log("newKnot = "+newKnot)
+    //console.log("Sx = "+Sx)
+    //console.log("Sy = "+Sy)
+    //console.log("[Cx,Cy] = "+[Cx, Cy])
+    //console.log("Cxy = "+Cxy)
+    //console.log("knot_closed = "+knot_closed)
+    //console.log("knotMatrixAux = "+KnotMatrixAux)
+    //console.log("OK = "+OK)
+    //console.log("VecUpDown = "+VecUpDown)
+    //VecUpDown=[];
+    ///console.log("VecUpDown deve branco= "+VecUpDown)
+    //console.log("VecIndex_I = "+VecIndex_I)
+    //console.log("VecIndexUp = "+VecIndexUp)
+    //console.log("Index_v = "+Index_v)
+    //console.log("Index_op = "+Index_op)
+    //console.log("dNC = "+dNC)
+    //console.log("k = "+k)
+    //console.log("cont = "+cont)
+    //console.log("knotMatrix = "+KnotMatrix)
+    // console.log("file_data_diagram = "+file_data_diagram);
+    // console.log("ReadDataDiagram= " + ReadDataDiagram);
+    //console.log("FIM___________________________________________________________________")
+    }
+</script>
+
+<script>// define canvasEl etc....and the construction of diagram of knot
+    //https://katlas.org/wiki/K11a1
+    
+    let canvasEl = document.querySelector('#canvas_drawing'); //"canvas_drawing" is the "id" of "canvas" defined in html body (<canvas> is a html object)
+    let ctx = canvasEl.getContext('2d');  //getContext('2d')  allows us drawing 2d geometry
+    ctx.fillStyle='blue' ; //text color (color of number vértices)
+    let OK=0;
+    //............................................................................................................................
     canvasEl.addEventListener('mousemove', (MouseM) => {//get (x,y)-mouse move position
         if (OK==0){
             xM = MouseM.offsetX;
             yM = MouseM.offsetY;
-            //document.getElementById("demo3").innerHTML = [xM,yM]
             if (m>2){
-                //document.getElementById("demo2").innerHTML = "Para fechar o nó mova e clica o mouse no primeiro ponto."
-                if (((Sx[0]-7 < xM) && (xM < Sx[0]+7)) && ((Sy[0]-7 < yM) && (yM < Sy[0]+7))){
+                if (((Sx[0]-7 < xM) && (xM < Sx[0]+7)) && ((Sy[0]-7 < yM) && (yM < Sy[0]+7))){//tolerancia da proximidade do mouse ao primeiro ponto
                     Dialog_closeKnot.style.left = Sx[0] + "px";
                     Dialog_closeKnot.style.top = Sy[0] + "px"
-                    window.Dialog_closeKnot.showModal()
+                    window.Dialog_closeKnot.showModal() //se a tolerância for ultrapassada, então a caixinha de diálogo para fechar o nó aparecerá
                     OK = 1
                 }
             }
         }
     })
+    //............................................................................................................................
 
+    //............................................................................................................................
     canvasEl.addEventListener('click', (MouseC) => {//get (x,y)-mouse click position
+        xc = canvasEl.clientWidth;  //width of canvas, é constante, entao colocar fora daqui
+        yc = canvasEl.clientHeight;
+        u1 = MouseC.offsetX;  // x-coordinate of mouseclick
+        v1 = MouseC.offsetY;
         if (newKnot == 1) {//if newKnot = 1, start the construction of knot diagram
             m = m+1
             x1 = MouseC.offsetX;  // x-coordinate of mouseclick
             y1 = MouseC.offsetY;
-            xc = canvasEl.clientWidth;  //width of canvas
-            yc = canvasEl.clientHeight;
+           // xc = canvasEl.clientWidth;  //width of canvas, é constante, entao colocar fora daqui
+           // yc = canvasEl.clientHeight;
             z1 = x1 - xc / 2  // transform screen coordinates to cartesian coordinates (with origin (0,0) in the center of canvas)
             w1 = -y1 + yc / 2
             Sx.push(x1) //push() add new item to the final of array
             Sy.push(y1)
             Cx.push(z1)
             Cy.push(w1)
+            Cxy.push([z1,w1])//esse formato foi útil para salvar o diagram do knot
+            ctx.fillStyle='blue'
             ctx.font = "20px serif";  //size of font
             ctx.fillText(m, x1 + 5, y1 + 5);
-            ctx.lineWidth = 2
+            ctx.lineWidth = 2;
             i = i + 1
 
             if (i > 1) {//if number points > 1, then start the construction of diagram
@@ -158,22 +187,141 @@
             x11 = x1;
             y11 = y1;
         }
-    })
+        if (knot_closed==1) {//realiza troca de escolha nas interseções somente se o knot estiver fechado e perguntado sobre todas as interseções
+            
+            //document.getElementById("demo").innerHTML = "vecupdown = " +VecUpDown;
+            for(let i = 0; i < VD2.length; i++){
+                ep=Math.pow(VD2[i][5]-u1,2)+Math.pow(VD2[i][6]-v1,2);//coord. tela
+                ep=Math.pow(ep,1/2)
+                if (ep < 5) {
+                    
+                    //console.log("apos ep < 5");
+                    document.getElementById("demo").innerHTML = ""
+                    //ctx.fillStyle='green'
+                    //ctx.font = "20px serif";  //size of font
+                    //ctx.fillText([ep, i] , 100, 150+50*i);                 
+                    //console.log("r < 5;  "+ [VD2[i][5],VD2[i][6]]+ " , "+i)
+                    //document.getElementById("demo").innerHTML = "r < 5;  "+ VD2+ " , "+"vecupdown = " +VecUpDown; 
+                    //VD2=[t1, i+1, j+1, z1, w1, xa, ya, a1, b1, a2, b2, c1, d1, c2, d2]) //store all information of each intersection point
+                    //VecUpDown[k][0] = VD[k][1]  //VD[k][1] = i
+                    //VecUpDown[k][1] = VD[k][2]  //VD[k][2] = j
+                    //VecUpDown[k][2] = VD[k][1]  //então, quer dizer que o segmento I_i passou por cima do segmento I_j
+                    //VecUpDown = [i, j, i ou j, var, +1 ou-1, oposto]
+                    //VecUpDown[0] = i
+                    //VecUpDown[1] = j
+                    //VecUpDown[2] = i ou j (o q passa por cima)
+                    //VecUpDown[3] = var
+                    //VecUpDown[4] = +-1
+                    //VecUpDown[5] = posição do vetor oposto
+
+                    if (VecUpDown[Index_v[i]][0] == VecUpDown[Index_v[i]][2] ) {//permuta os índices de quem passou por
+                        VecUpDown[Index_v[i]][2] =  VecUpDown[Index_v[i]][1];
+                        VecUpDown[Index_op[i]][2] = VecUpDown[Index_v[i]][1]; 
+                        r = 8
+                        ctx.fillStyle='#ffe4c4'
+                        //ctx.fillStyle='#73AD21'
+                        ctx.beginPath()
+                        ctx.ellipse(VD2[i][5],VD2[i][6], r, r,  Math.PI/4, 0, 2*Math.PI)  //clears a region around the intersection
+                        ctx.fill()
+
+                        //temos que: p_i retorna os dois param. da interseção do círculo (x-z1)^2+(y-z1)^2=r^2 com segmento A_iA_i+1
+                        p_i = IntersectCircleLine(VD2[i][3], VD2[i][4], r, VD2[i][11], VD2[i][12], VD2[i][13], VD2[i][14])
+                        //agora converter para coord. da tela e ligar esses dois pontos para fechar a porção desejada do segmento.
+                        xi = VD2[i][11] + p_i[0] * (VD2[i][13] - VD2[i][11])
+                        yi = VD2[i][12] + p_i[0] * (VD2[i][14] - VD2[i][12])
+                        Xi = xi + xc / 2
+                        Yi = -yi + yc / 2
+
+                        xii = VD2[i][11] + p_i[1] * (VD2[i][13] - VD2[i][11])
+                        yii = VD2[i][12] + p_i[1] * (VD2[i][14] - VD2[i][12])
+                        Xii = xii + xc / 2
+                        Yii = -yii + yc / 2
+
+                        ctx.beginPath()
+                        ctx.moveTo(Xi, Yi)
+                        ctx.lineTo(Xii, Yii) //segmento que une o segmento interrompido
+                        ctx.stroke()
+                    }else{
+                        VecUpDown[Index_v[i]][2] =  VecUpDown[Index_v[i]][0];//tbem trocamos no vetor oposto 
+                        VecUpDown[Index_op[i]][2] = VecUpDown[Index_v[i]][0]; 
+                        r = 8
+                        ctx.fillStyle='#ffe4c4'
+                        ctx.beginPath()
+                        ctx.ellipse(VD2[i][5],VD2[i][6], r, r,  Math.PI/4, 0, 2*Math.PI)  //clears a region around the intersection
+                        ctx.fill()
+                        //temos que: p_i retorna os dois param. da interseção do círculo (x-z1)^2+(y-z1)^2=r^2 com segmento A_iA_i+1
+                        p_i = IntersectCircleLine(VD2[i][3], VD2[i][4], r, VD2[i][7], VD2[i][8], VD2[i][9], VD2[i][10])
+                        //agora converter para coord. da tela e ligar esses dois pontos para fechar a porção desejada do segmento.
+                        xi = VD2[i][7] + p_i[0] * (VD2[i][9] - VD2[i][7])
+                        yi = VD2[i][8] + p_i[0] * (VD2[i][10] - VD2[i][8])
+                        Xi = xi + xc / 2
+                        Yi = -yi + yc / 2
+
+                        xii = VD2[i][7] + p_i[1] * (VD2[i][9] - VD2[i][7])
+                        yii = VD2[i][8] + p_i[1] * (VD2[i][10] - VD2[i][8])
+                        Xii = xii + xc / 2
+                        Yii = -yii + yc / 2
+
+                        ctx.beginPath()
+                        ctx.moveTo(Xi, Yi)
+                        ctx.lineTo(Xii, Yii) //segmento que une o segmento interrompido
+                        ctx.stroke()
+                    }
+                }   
+            }
+            for(let k = 0; k < (2*(VD2.length)); k++){
+                VecUpDown[k][3]=0;
+            } 
+        }
+        }
+    )
+
+    //............................................................................................................................
+
 </script>
 <!-- ===================================================================================================================================== -->
 
-<script>
-    function IntersectCircleLine(xC,yC,r,p1,p2,q1,q2){
-        //(xC,yC) =  center of circle;  r = radius of circle:  (x-xC)^2+(y-yC)^2 = r^2
-        //P(p1,p2) and Q(q1,q2) points that define segmente line rPQ by P and Q:  rPQ = [(1-s)p1+sq1, (1-s)p2+sq2] (parametrized with parameter s)
-        G  = p1 * p1 - 2 * p1 * q1 + p2 * p2 - 2 * p2 * q2 + q1 * q1 + q2 * q2
-        K  =  -p1 * p1 * q2 * q2 + 2 * p1 * p1 * q2 * yC + p1 * p1 * r * r - p1 * p1 * yC * yC + 2 * p1 * p2 * q1 * q2 - 2 * p1 * p2 * q1 * yC - 2 * p1 * p2 * q2 * xC + 2 * p1 * p2 * xC * yC - 2 * p1 * q1 * q2 * yC - 2 * p1 * q1 * r * r + 2 * p1 * q1 * yC * yC + 2 * p1 * q2 * q2 * xC - 2 * p1 * q2 * xC * yC - p2 * p2 * q1 * q1 + 2 * p2 * p2 * q1 * xC + p2 * p2 * r * r - p2 * p2 * xC * xC + 2 * p2 * q1 * q1 * yC - 2 * p2 * q1 * q2 * xC - 2 * p2 * q1 * xC * yC - 2 * p2 * q2 * r * r + 2 * p2 * q2 * xC * xC + q1 * q1 * r * r - q1 * q1 * yC * yC + 2 * q1 * q2 * xC * yC + q2 * q2 * r * r - q2 * q2 * xC * xC
-        L  = p1 * p1 - p1 * q1 - p1 * xC + p2 * p2 - p2 * q2 - p2 * yC + q1 * xC + q2 * yC
-        s  = [(Math.sqrt(K)+L)/G, -(Math.sqrt(K)-L)/G]
-        return s
-    }
-</script>
 <!-- ===================================================================================================================================== -->
+<script>//save diagram knot
+    document.getElementById('btn_save').addEventListener('click', async function() {
+    
+    Cxy.push(VecIndexUp);
+    const dados = Cxy;
+    
+
+    // Converter array para string
+    const dadosString = dados.join('\n');
+
+    try {
+        // Opções para a caixa de diálogo
+        const options = {
+            types: [
+                {
+                    description: 'Files text de texto',
+                    accept: {
+                        'text/plain': ['.txt'],
+                    },
+                },
+            ],
+        };
+
+        // Solicitar acesso ao sistema de arquivos
+        const handle = await window.showSaveFilePicker(options);
+
+        // Criar um objeto de escrita de arquivo
+        const writable = await handle.createWritable();
+
+        // Escrever os dados no arquivo
+        await writable.write(dadosString);
+
+        // Finalizar a escrita e fechar o arquivo
+        await writable.close();
+    } catch (error) {
+        console.error('Error to save file:', error);
+    }
+    Cxy.pop();
+});
+</script>
 
 <script>
     function disabled_button(id_button, true_or_false){// funtion to disabled or enabled the button by id="id_button"
@@ -182,8 +330,175 @@
 </script>
 <!-- ===================================================================================================================================== -->
 
+<script>
+    // Função para ler o diagrama e desenhar o nó
+function ReadDataDiagram(file) { // Recebe o arquivo como parâmetro
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        NewKnot();
+        const text = event.target.result;
+        const lines = text.split('\n');
+
+        num_lines = lines.length;
+
+        for (const line of lines) {
+            const parts = line.split(",");
+            Cx.push(parseFloat(parts[0]));
+            Cy.push(parseFloat(parts[1]))
+        }
+        Cx.pop(); // Remove o último item do array
+        Cy.pop();
+        const Chooses = lines[num_lines - 1]; // Última linha
+        ChoosesUp = Chooses.split(",").map(parseFloat);
+        SketchDiagram();
+    };
+    reader.readAsText(file);
+    //fileInput = undefined;
+    console.log("fileInput ReadDataDiagram = "+fileInput);
+};
+
+// Obtém o elemento de input de arquivo
+var fileInput = document.getElementById('file_data_diagram');
+console.log("fileInput fora da função =" + fileInput);
+
+// Função para lidar com a seleção do arquivo
+//function handleFileSelect() {
+function LoadDiagram(event) {
+    //const fileInput = document.getElementById('file_data_diagram');
+    console.log("_______________________________________________________________");
+    
+    console.log("Entrou em LoadDiagram");
+    
+
+    document.getElementById("file_data_diagram").click();
+
+    const file = event.target.files[0];
+
+    console.log("apos document.getElementById(file_data)diagram)");
+
+    //const file = fileInput.files[0];
+
+    console.log("const file dentro de LoadDiagram =" + file);
+
+    if (file) {
+        console.log("if(file) antes de ler ReadDataDiagram(file) =" + file);
+        ReadDataDiagram(file); // Chama a função ReadDataDiagram com o arquivo selecionado
+        console.log("if(file) apos de ler ReadDataDiagram(file) =" + file);
+    } else {
+        // O usuário cancelou a seleção do arquivo, não faça nada
+        console.log("Seleção de arquivo cancelada.");
+    }
+    fileInput.value='';    
+    console.log("fileInput.value = " + fileInput.value);
+}
+
+// Adiciona o ouvinte de eventos de volta ao input de arquivo
+fileInput.addEventListener('change', LoadDiagram);
+//fileInput.addEventListener('change', handleFileSelect);
+
+// Chama a função ReadDataDiagram inicialmente com o arquivo atual do input (se houver)
+//if (fileInput.files.length > 0) {
+//    ReadDataDiagram(fileInput.files[0]);
+//    console.log("fileInput.files.length ="+fileInput.files.length);
+//}
+
+// Adiciona um botão para forçar a execução da função ReadDataDiagram
+
+
+//btn_LoadDiagram.addEventListener('click', () => {
+//    const file = fileInput.files[0];
+//    console.log('entrou no botao loaddiagram')
+//    if (file) {
+//        ReadDataDiagram(file);
+//    } else {
+//            //alert('Nenhum arquivo selecionado!');
+//    }
+//});
+
+</script>
+
+
+<script>//Desenha o nó com os dados pré-fornecidos.
+//function LoadDiagram(){
+//    document.getElementById("file_data_diagram").click();
+//    const file = fileInput.files[0];
+//    console.log("const file = "+ file)
+//    console.log('entrou no botao loaddiagram : apos file_data_diagrama.click')
+//    if (file) {
+//        ReadDataDiagram(file);
+//        console.log('entrou no if (file) dentro de LoadDiagram ='+ file)
+//    } else {
+            //alert('Nenhum arquivo selecionado!');
+//    }
+    //ReadDataDiagram();
+//}
+</script>
+
+<script>//function ReadDataDiagram
+//function ReadDataDiagram(){//read and open file and sketch diagram of knot 
+//    document.getElementById('file_data_diagram').addEventListener('change', function() {
+//        const file = this.files[0];
+//        const reader = new FileReader();
+//
+//       reader.onload = function(event) {
+//            NewKnot();           
+//            const text = event.target.result; 
+//            const lines = text.split('\n');
+//
+//            num_lines = lines.length;
+//            
+//            for (const line of lines) {
+//                const parts = line.split(",");
+//                Cx.push(parseFloat(parts[0]));
+//                Cy.push(parseFloat(parts[1]))
+//            }
+//            Cx.pop();//pop: remove the last item of array
+//            Cy.pop();
+//            const Chooses = lines[num_lines-1]//last line
+//            ChoosesUp = Chooses.split(",").map(parseFloat);
+//            SketchDiagram()
+//        };
+//        reader.readAsText(file);
+//        });
+//}
+</script>
+
+<script> //sketchDiagram() 
+function SketchDiagram(){
+    xc = canvasEl.clientWidth;  //width of canvas, é constante, entao colocar fora daqui
+    yc = canvasEl.clientHeight;
+    
+    for (let i = 0; i < Cx.length; i++) {
+        z1 = Cx[i];
+        w1 = Cy[i];
+        x1 =  z1+xc/2      //local variabel of screen x-coord. of intersection
+        y1 = -w1+yc/2
+
+        Sx.push(x1) //push() add new item to the final of array
+        Sy.push(y1)
+    }
+    
+    for (let k = 0; i < Sx.length; k++) {
+        ctx.font = "20px serif";  //size of font
+        ctx.fillText(k+1, Sx[k] + 5, Sy[k] + 5);
+        ctx.lineWidth = 2
+        i = i + 1
+        ctx.beginPath()
+        ctx.moveTo(Sx[k]  , Sy[k])
+        ctx.lineTo(Sx[k+1], Sy[k+1])
+        ctx.stroke()
+    }
+    
+    btn_KnotSemMouse.click();
+
+    btn_Alex.click();
+}
+</script>
+
 <script>//start script function DiagramKnot
-function DiagramKnot() {//this function close the knot and start the questions about intersections
+function DiagramKnot() {//this function close the knot and start the questions about intersections. (called automatically when the diagram is closed by user)
+    ponto.style.visibility= 'visible';
     document.getElementById("btn_Yes").disabled = false;
     document.getElementById("btn_No").disabled = false;
     newKnot = -1
@@ -198,10 +513,13 @@ function DiagramKnot() {//this function close the knot and start the questions a
     Paramt1 = []  //this array store all information for each intersection point
     num_I = 0
     numpoints=Cy.length  //get the number of vertices of diagram
+    
     Sx.push(Sx[0])  //to close the diagram, the last point coincide with the firs point
     Sy.push(Sy[0])
     Cx.push(Cx[0])
     Cy.push(Cy[0])
+
+    //...................................................................................................................................................
 
     for (let i = 0; i < numpoints; i++) {
         a1 = Cx[i]
@@ -212,34 +530,38 @@ function DiagramKnot() {//this function close the knot and start the questions a
         Paramt1 = []
         done = false
         for (let j = 0; j < numpoints; j++) {
-              if (i != j) {
-                  // i!=j: intersection of adjacent segments do not matter
-                  c1 = Cx[j]  //cartesian coordinate of A_j-click
-                  d1 = Cy[j]
-                  c2 = Cx[j+1] //cartesian coordinate of A_{j+1}-click
-                  d2 = Cy[j+1]
-                  t1 = (a1*d1-a1*d2-b1*c1+b1*c2+c1*d2-c2*d1)/(a1*d1-a1*d2-a2*d1+a2*d2-b1*c1+b1*c2+b2*c1-b2*c2)
-                  t2 = -(a1 * b2 - a1 * d1 - a2 * b1 + a2 * d1 + b1 * c1 - b2 * c1) / (a1 * d1 - a1 * d2 - a2 * d1 + a2 * d2 - b1 * c1 + b1 * c2 + b2 * c1 - b2 * c2)
+            if (i != j) {
+                // i!=j: intersection of adjacent segments does not matter
+                c1 = Cx[j]  //cartesian coordinate of A_j-click
+                d1 = Cy[j]
+                c2 = Cx[j+1] //cartesian coordinate of A_{j+1}-click
+                d2 = Cy[j+1]
+                t1 = (a1*d1-a1*d2-b1*c1+b1*c2+c1*d2-c2*d1)/(a1*d1-a1*d2-a2*d1+a2*d2-b1*c1+b1*c2+b2*c1-b2*c2)
+                t2 = -(a1 * b2 - a1 * d1 - a2 * b1 + a2 * d1 + b1 * c1 - b2 * c1) / (a1 * d1 - a1 * d2 - a2 * d1 + a2 * d2 - b1 * c1 + b1 * c2 + b2 * c1 - b2 * c2)
 
-                  if ((0 < t1 && t1 < 1) && (0 < t2 && t2 < 1))  {//then there was intersection between the segments
-                      done = true
-                      num_I = num_I+1
-                      z1 =  a1+t1*(a2-a1) //local variable of cartes. x-coord. of intersection
-                      w1 =  b1+t1*(b2-b1)
-                      xa =  z1+xc/2      //local variabel of screen x-coord. of intersection
-                      ya = -w1+yc/2
-
-                      Paramt1.push([t1, i+1, j+1, z1, w1, xa, ya, a1, b1, a2, b2, c1, d1, c2, d2]) //store all information of each intersection point
-                      r = 8
-                      ctx.fillStyle='#3ea4c1'
-                      ctx.beginPath()
-                      ctx.ellipse(xa,ya, r, r,  Math.PI/4, 0, 2*Math.PI)  //clears a region around the intersection
-                      ctx.fill()
-                  }
+                if ((0 < t1 && t1 < 1) && (0 < t2 && t2 < 1))  {//then there was intersection between the segments
+                    done = true
+                    num_I = num_I+1
+                    z1 =  a1+t1*(a2-a1) //local variable of cartes. x-coord. of intersection
+                    w1 =  b1+t1*(b2-b1)
+                    xa =  z1+xc/2      //local variabel of screen x-coord. of intersection
+                    ya = -w1+yc/2
+                    
+                    Paramt1.push([t1, i+1, j+1, z1, w1, xa, ya, a1, b1, a2, b2, c1, d1, c2, d2]) //store all information of each intersection point
+                    r = 8
+                    //ctx.fillStyle='#3ea4c1'
+                    ctx.fillStyle='#ffe4c4'
+                    ctx.beginPath()
+                    ctx.ellipse(xa,ya, r, r,  Math.PI/4, 0, 2*Math.PI)  //clears a region around the intersection
+                    ctx.fill()
+                }
               }
-        }
+            }
+        
+        //toda vez qua acaba o for j, ordenamos as interseções, afim de não pular cruzamentos e depois voltar em outro cruzamento na mesma linha
+
         for (let i =0; i < (num_I-1); i++){//ordena a lista Paramt1 de acordo com a ordem crescente dos parâmetros t1.
-            for (j = i+1; j < num_I; j++){
+            for (j = i+1; j < num_I; j++){ //importante para percorrer o diagrama naturalmente
                 if (Paramt1[j][0] < Paramt1[i][0]){
                     aux = Paramt1[i]
                     Paramt1[i] = Paramt1[j]
@@ -247,18 +569,24 @@ function DiagramKnot() {//this function close the knot and start the questions a
                 }
             }
         }
-        if (done == true){
+        
+        if (done == true){//Assim, VD só pega informações somente relativa as interseções
             for (let n =0; n < Paramt1.length; n++){//significa que n varia de 0 até (len(Paramt1)-1)
-            VD.push(Paramt1[n]) //adiciona Paramt1[n] para o novo vetor "VD"
+                VD.push(Paramt1[n]) //adiciona Paramt1[n] para o novo vetor "VD"
             }
         }
+        
     }
+    //...................................................................................................................................................
 
-  //--------------------- termino para encontrar os pontos de interseção dos segmentos
+    //--------------------- término para encontrar os pontos de interseção dos segmentos
+
+
     NC = VD.length/2 //NC = número de cruzamentos do diagrama do nó;  // = divisão inteira
     if (NC == 0){
         disabled_button("btn_Yes", "true")
         disabled_button("btn_No", "true")
+        ponto.style.visibility= 'hidden';
         document.getElementById("demo").innerHTML = "Knot determinant: D = 1 <br> Alexander polynomial: p(t) = 1"
     }
     dNC = 2*NC
@@ -269,7 +597,9 @@ function DiagramKnot() {//this function close the knot and start the questions a
         for (let k = i; k < dNC; k++) {
             if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])) {//busca pelos vetores v_i com [i,j] permutados, isto é, busca pelo vetor oposto
                 q = q + 1
-                VecIndex_I[q] = VD[i][1]
+                VecIndex_I[q] = VD[i][1] //VecIndex_I = array somente com os indices I que houve interseção
+                Index_v.push(i)  // store the indexes  of i-ésima intersection
+                Index_op.push(k) // store the indexes  of k-ésima intersection opposite
             }
         }
     }
@@ -292,56 +622,63 @@ function DiagramKnot() {//this function close the knot and start the questions a
     // VecUpDown[5] guarda a posição do vetor oposto, útil para montar a matriz do sistema.
     //***********************************************************************************************
     k=-1
+    ponto.style.left = (VD[0][5]-3)+'px';
+    ponto.style.top =  (VD[0][6]+3)+'px';
     document.getElementById("DesejaLigar").textContent = "Do you want to link the segment portion " + VD[0][1] + '______' + (VD[0][1]+1)+"?";
-    return VD, VecUpDown, dNC, k, VecIndex_I   //retorna essas variáveis definidas antes como globais
+    //document.getElementById("DesejaLigar").textContent = "VD = " + VD;
+    //console.log("VD diagramKnot: VD = ", VD);
+    //esta linha acima tem que aparecer aqui primeiro antes de dar o primeiro clique em YES ou NO butoon. Estas perguntas se repetirão abaixo.
+    VD2=[];//vetor com infos dos cruzamentos sem repetição
+    for (let i = 0; i < dNC; i++) {//cria um array somente com os indices I que houve interseção
+        for (let k = i; k < dNC; k++) {
+            if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])) {//busca pelos vetores v_i com [i,j] permutados, isto é, busca pelo vetor oposto
+                VD2.push(VD[i]);//Cria uma matrix com dados dos cruzamentos (tirando as repetições que ocorrem em VD, pois em VD passamos pela interseção duas vezes)
+            }
+        }
+    }
+    return VD, VD2, VecUpDown, dNC, k, VecIndex_I   //retorna essas variáveis definidas antes como globais
 }//End function DiagramKnot
 </script>
 
-<script>
-    disabled_button("btn_Yes", "true") //disabled = true:  button started disabled
-    disabled_button("btn_No", "true")
-    disabled_button("btn_PolyAlexander", "true")
 
-    //Below globals variables
-    VD=[]  //double vector
-    var VecUpDown = new Array(6)
-    VecIndex_I=[]  // store the indexes i of intersections
-    var dNC        // double of intersections
-    let k=-1
-    let cont=0
-    KnotMatrixAux = []
-    KnotMatrix = []
-</script>
-
-<script>
-    function NewKnot(){
-        window.location.reload() //restart o programa
-    }
-</script>
-
-<script>
+<script>//YesClick()
     function YesClick(){
-        start_position: while (true) {
-            k=k+1
+        start_position: while (true) {//este while vai caminhando até encontrar número diferente de zero, com isso temos um "k" para a respectiva interseção,
+            k=k+1                     // pois nem sempre k = cont (note que cont é usado na pergunta de qual segmento usar.)
             if (VecUpDown[k][2] != 0) continue start_position
             break;
         }
         cont = cont+1 //conta a quantidade de cliques (ou seja, a quantidade de interseção = dNC/2
+        if (cont < dNC/2){
+            ponto.style.left = (VD[Index_v[cont]][5]-2)+'px';
+            ponto.style.top =  (VD[Index_v[cont]][6]+2)+'px';
+        }
+                    
+        if (cont == dNC/2){
+            ponto.style.visibility='hidden'
+        }
 
-        document.getElementById("DesejaLigar").textContent = "Deseja ligar a porção do segmento " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
+        document.getElementById("DesejaLigar").textContent = "Do you want to link the segment portion " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
 
-        if (cont==(dNC/2)){//se alcançar a quantidade de interseções, desativa os botoeSim e BotaoNao
+        if (cont==(dNC/2)){//se alcançar a quantidade de interseções, desativa os botoes Sim e Botao Nao
             document.getElementById("btn_Yes").disabled = true;
             document.getElementById("btn_No").disabled = true;
             document.getElementById("DesejaLigar").textContent =""
+            knot_closed=1 //means that knot closed
+         //   cont=0
         }
         xa    = VD[k][5]    //xa e ya são coordenadas (tela) das interseções dos segmentos, usado para criar o círculo
         ya    = VD[k][6]
+        //ctx.fillStyle='red'
+        //ctx.font = "20px serif";  //size of font
+        //ctx.fillText(["P"+cont,Math.trunc(xa), Math.trunc(ya)], 600, 50*(cont)); //para testes
         ui_x  = VD[k][9]-VD[k][7]      //i = vetor vec(A_iA_{i+1})
         ui_y  = VD[k][10]-VD[k][8]
         wj_x  = VD[k][11]-VD[k][7]     // = vetor vec(A_iA_{j})
         wj_y  = VD[k][12]-VD[k][8]
         sinal = ui_x*wj_y-ui_y*wj_x    //coord. k do prod. vetorial, para fornecer a orientação
+       // console.log("cont yes = "+cont);
+        
         if (sinal > 0) {//orientacao +
             VecUpDown[k][4] = 1
         } else {
@@ -351,6 +688,7 @@ function DiagramKnot() {//this function close the knot and start the questions a
         VecUpDown[k][0] = VD[k][1]  //VD[k][1] = i
         VecUpDown[k][1] = VD[k][2]  //VD[k][2] = j
         VecUpDown[k][2] = VD[k][1]  //então, quer dizer que o segmento I_i passou por cima do segmento I_j
+        VecIndexUp.push(VD[k][1])
         //temos que: p_i retorna os dois param. da interseção do círculo (x-z1)^2+(y-z1)^2=r^2 com segmento A_iA_i+1
         p_i = IntersectCircleLine(VD[k][3], VD[k][4], r, VD[k][7], VD[k][8], VD[k][9], VD[k][10])
         //agora converter para coord. da tela e ligar esses dois pontos para fechar a porção desejada do segmento.
@@ -370,15 +708,18 @@ function DiagramKnot() {//this function close the knot and start the questions a
         ctx.stroke()
         //Inicio________________ for (let i = k; k < dNC; i++)
         tex=""
-        for (let i = k; k < dNC; i++) {
+        for (let i = k; k < dNC; i++) {//note que aqui i>k, a procura do oposto começa a partir de k.
             if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])){//busca pelos vetores v_i com [i,j] permutados, isto é, busca pelo vetor oposto
                 VecUpDown[i][0] = VD[k][2] //uma vez encontrado o oposto em VD, então apenas atualizamos em VecUpDown
                 VecUpDown[i][1] = VD[k][1]
                 VecUpDown[i][2] = VD[k][1]
                 VecUpDown[k][5] = i        // guarda a posição que está o vetor oposto
+                //Index_v.push(k)  // store the indexes  of k-ésima intersection
+                //Index_op.push(i) // store the indexes  of k-ésima intersection opposite
+                //criar aqui um array com os indices dos cruzamentos originais (isto é sem os opostos)
             }
             if (i == dNC-1 && cont==(dNC/2)) {
-                document.getElementById("btn_PolyAlexander").disabled = false;
+                document.getElementById("btn_PolyAlexander").disabled = false;//ativa o botao poly de alexander
             } // Este último if funcionou aqui. Coloquei esse mesmo if abaixo deste for e não funcionou;
         }
     }
@@ -392,20 +733,34 @@ function DiagramKnot() {//this function close the knot and start the questions a
             break;
         }
         cont = cont+1 //conta a quantidade de cliques (ou seja, a quantidade de interseção = dNC/2
-        document.getElementById("DesejaLigar").textContent = "Deseja ligar a porção do segmento " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
+        if (cont < dNC/2){
+            ponto.style.left = (VD[Index_v[cont]][5]-2)+'px';
+            ponto.style.top =  (VD[Index_v[cont]][6]+2)+'px';
+        }
+                    
+        if (cont == dNC/2){
+            ponto.style.visibility='hidden'
+        }
+       // console.log("cont no = " + cont);
+        document.getElementById("DesejaLigar").textContent = "Do you want to link the segment portion " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
 
         if (cont==(dNC/2)){
             document.getElementById("DesejaLigar").textContent =""
             document.getElementById("btn_Yes").disabled = true;
             document.getElementById("btn_No").disabled = true;
+            knot_closed=1 //means that knot closed
+           // cont=0
         }
         xa    = VD[k][5]    //xa , ya are screen coordinates of intersections of segments
         ya    = VD[k][6]
+        //ctx.fillText(["P"+cont  ,Math.trunc(xa), Math.trunc(ya)], 600, 40*(cont));//para testes
         ui_x  = VD[k][9]-VD[k][7]      //i = vetor vec(A_iA_{i+1})
         ui_y  = VD[k][10]-VD[k][8]
         wj_x  = VD[k][11]-VD[k][7]     // = vetor vec(A_iA_{j})
         wj_y  = VD[k][12]-VD[k][8]
         sinal = ui_x*wj_y-ui_y*wj_x    //coord. k do prod. vetorial, para fornecer a orientação
+        
+
         if (sinal > 0) {//orientacao +
             VecUpDown[k][4] = 1
             } else {
@@ -414,6 +769,7 @@ function DiagramKnot() {//this function close the knot and start the questions a
         VecUpDown[k][0] = VD[k][1]//VD[k][1] = i
         VecUpDown[k][1] = VD[k][2]//VD[k][2] = j
         VecUpDown[k][2] = VD[k][2]// então, quer dizer que I_j passou por cima de I_i
+        VecIndexUp.push(VD[k][2])
         r=9
         p_i = IntersectCircleLine(VD[k][3], VD[k][4], r, VD[k][11], VD[k][12], VD[k][13], VD[k][14])
         //p_i retorna os dois param. da interseção do círculo (x-z1)^2+(y-z1)^2=r^2 com segmento A_jA_{j+1}
@@ -438,6 +794,8 @@ function DiagramKnot() {//this function close the knot and start the questions a
                 VecUpDown[i][1] = VD[k][1]
                 VecUpDown[i][2] = VD[k][2]
                 VecUpDown[k][5] = i // store position of oposto vector
+                //Index_v.push(k)  // store the indexes  of k-ésima intersection
+                //Index_op.push(i) // store the indexes  of k-ésima intersection opposite
                 //VecIndex_I[m][0]
             }
             if (i == dNC-1 && cont==(dNC/2)) {
@@ -447,6 +805,25 @@ function DiagramKnot() {//this function close the knot and start the questions a
     }
 </script>
 
+<script>//function Alex - Desenha o nó com os dados pré-fornecidos.
+
+function Alex() {
+    let m = 0;
+    
+    while (m < ChoosesUp.length ) {
+        if (ChoosesUp[m] == VecIndex_I[m]) {
+            document.getElementById("btn_Yes").click();
+            //btn_Yes.click()
+            //YesClick();
+        } else {
+            btn_No.click()
+            //NoClick();
+        }
+        m++;
+    }
+}
+</script>
+
 <script>
     function createObject(object, variableName){
         //Bind a variable whose name is the string variableName to the object called 'object'
@@ -454,116 +831,87 @@ function DiagramKnot() {//this function close the knot and start the questions a
         console.log("Running '" + execString + "'");
         eval(execString)
     }
+        //<py-script type="py" src="./main.py" config="./pyscript.toml"></py-script>
+    //<py-script src="./main.py"></py-script>
+
+    //<py-config>
+      //  packages = ["sympy"]
+    //</py-config>
 </script>
-<!-- ================================================================================================================== -->
-<py-script>
-    import js
-    from js import document
-    from js import createObject
-    #from pyodide import create_proxy
-    from pyodide.ffi import create_proxy
-    createObject(create_proxy(globals()), "pyodideGlobals")
-    from js import disabled_button
+<script>
+    disabled_button("btn_Yes", "true"); //disabled = true:  button started disabled
+    disabled_button("btn_No", "true");
+    disabled_button("btn_PolyAlexander", "false")
+    ponto.style.visibility= 'hidden';
 
-    def PolyAlexander_OnClk():
-        import sympy
-        from js import VecUpDown
-        from js import VD
-        from js import DiagramKnot
+    //Below globals variables
+    VD=[];  //double vector
+    var VecUpDown = new Array(6);
+    VecIndex_I=[];  // store the indexes i of intersections
+    VecIndexUp=[]; // store the indexes of segments passing by Up in the intersection
+    var dNC;        // double of intersections
+    k=-1;
+    var cont;
+    cont=0;
+   // console.log("var cont =" + cont)
+    KnotMatrixAux = [];
+    KnotMatrix = [];
+    i = 0; m = 0; let  newKnot= 1; let z1, w1, xc, yc;
+    Sx = [];  // screen x coordinate of click
+    Sy = [];  // screen y coordinate of click
+    Cx = [];  // screen x converted in cartesian coordinate
+    Cy = [];  // screen y converted in cartesian coordinate
+    Cxy= [];  //screen x,y converted in cartesian coodinate
+    //ChoosesUp = "";// guardar as escolhas dos segmentos por cima   
+    knot_closed=0; //means that knot não foi perguntado sobre todas as interseções... isto é o knot ainda não foi finalizado
+    //KnotMatrixAux=[];
+    Index_v=[];
+    Index_op=[];
+</script>
 
-        from sympy import Symbol
-        #from sympy.solvers import solve
-        from sympy.matrices import Matrix
+<script>//NewKnot
+    function NewKnot(){
+        //window.location.reload() //restart o programa
+        //var conteudoArquivoAnterior = null;
+        ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);//limpa o Canvas
+        i = 0; m = 0; newKnot= 1; 
+        Sx = [];  // screen x coordinate of click
+        Sy = [];  // screen y coordinate of click
+        Cx = [];  // screen x converted in cartesian coordinate
+        Cy = [];  // screen y converted in cartesian coordinate
+        Cxy= [];  //screen x,y converted in cartesian coodinate
+        //ChoosesUp = "";// guardar as escolhas dos segmentos por cima   
+        knot_closed=0; //means that knot não foi perguntado sobre todas as interseções... isto é o knot ainda não foi finalizado
+        KnotMatrixAux=[];
+        OK=0;
+        disabled_button("btn_Yes", "true"); //disabled = true:  button started disabled
+        disabled_button("btn_No", "true");
+        disabled_button("btn_PolyAlexander", "true");
+        ponto.style.visibility= 'hidden';
 
-        disabled_button("btn_PolyAlexander","false")
+        //Below globals variables
+        VD=[];  //double vector
+        VecUpDown = [];
+        //console.log("VecUpDown func newKnot deveria branco = "+VecUpDown)
+        VecIndex_I=[];  // store the indexes i of intersections
+        VecIndexUp=[];  // store the indexes of segments passing by Up in the intersection
+        Index_v=[];  // store the indexes  of k-ésima intersection
+        Index_op=[]; // store the indexes of opposite of k-ésima intersection (pois passamos duas vezes pela mesma interseção ao percorrer o nó)
+        dNC = undefined;        // double of intersections
+        k=-1;
+        //var cont;
+        //NewKnotClicked = 1
+        //console.log("var cont newknot antes de zerar=" + cont);
+        cont = 0;
+        //console.log("var cont newknot depois de zerar=" + cont);
+        KnotMatrixAux = [];
+        KnotMatrix = [];
+        ctx.fillStyle='blue';
+        document.getElementById("demo").innerHTML = ""; 
+        document.getElementById("DesejaLigar").textContent = "";
+    }
+</script>
 
-        NC = (len(VD)//2)   #NC = number of intersection of knot diagram; // = integer division
-        dNC = 2*NC
-        Var = 1
-
-        for k in range(dNC):  #this for create the variables arc of knot
-            if VecUpDown[k][0] == VecUpDown[k][2]:
-                VecUpDown[k][3] = Var   #Var start with value = 1. Var is used to name the arcs. Ex. var = 'a', then var = 1 (column 1), etc...
-            if VecUpDown[k][1] == VecUpDown[k][2]:  # if the seconc and third entries of VecUpDown are equals, means there was an intersection in the segment, and
-                Var = Var+1                         # we must name a new variable. (then var = var+1).
-                VecUpDown[k][3] = Var               # VecUpDown[3] store numbers that corresponding the variables (names of arcs), 1 <--> a, 2 <--> b, 3 <..> c, ...
-            if Var == NC+1:                         # as we have NC variables, then var = NC+1, means we're back to the first variable, so VecUpDown[k][3] = 1
-                VecUpDown[k][3] = 1
-        # Next get the node matrix and calculate its determinant
-        KnotMatrixAux = []
-        for i in range(NC):   #s quare matrix NC x NC filled with zeros
-            KnotMatrixAux.append([0 for j in range(NC)])
-
-        t = sympy.Symbol('t')   # symbolic variable t
-        J = sympy.Symbol('J')   # symbolic variable J,
-        Li = -1                 # used to representate the i-line of matrix KnotMatrixAux
-
-        for i in range(dNC):            # MatrixNo[i][j], line i, column j
-            if VecUpDown[i][4] != 0:    # VecUpDown[i][4] store the orientation +1 or -1. VecUpDown[i][4] is used to search or verify the not used vector
-                Li = Li+1               # Note that there are NC lines, but the for "for" go from 0 to dNC.
-                                        # Quando o vetor oposto é usado VecUpDown[i][4] do oposto continua zero. e no futuro, pulamos este vetor, devido ao fato de ter sido usado.
-                op = VecUpDown[i][5]    # retorna posicao do vetor oposto
-                if VecUpDown[i][0] == VecUpDown[i][2]:  #v[1]=v[3]
-                    if (VecUpDown[i][4] < 0):
-                        KnotMatrixAux[Li][VecUpDown[i][3] -1] = t-1   + (KnotMatrixAux[Li][VecUpDown[i][3] -1])
-                        KnotMatrixAux[Li][VecUpDown[op][3]-1] = 1
-                        KnotMatrixAux[Li][VecUpDown[op][3]-2] = -t    + (KnotMatrixAux[Li][VecUpDown[op][3]-2])
-                    else:  #quer dizer que VecUpDown[i][4] > 0
-                        KnotMatrixAux[Li][VecUpDown[i][3] - 1] = t - 1 + (KnotMatrixAux[Li][VecUpDown[i][3] - 1])
-                        KnotMatrixAux[Li][VecUpDown[op][3] - 1] = -t + (KnotMatrixAux[Li][VecUpDown[op][3] - 1])
-                        KnotMatrixAux[Li][VecUpDown[op][3] - 2] = 1
-                if VecUpDown[i][1] == VecUpDown[i][2]:  #v[2]=v[3]
-                    if VecUpDown[i][4] < 0:
-                        KnotMatrixAux[Li][VecUpDown[i][3] - 1] = -t + (KnotMatrixAux[Li][VecUpDown[i][3] - 1])
-                        KnotMatrixAux[Li][VecUpDown[i][3] - 2] = 1
-                        KnotMatrixAux[Li][VecUpDown[op][3] - 1] = t-1 + (KnotMatrixAux[Li][VecUpDown[op][3] - 1])
-                    else:   # quer dizer que VecUpDown[i][4] > 0
-                        KnotMatrixAux[Li][VecUpDown[i][3] - 1] = 1
-                        KnotMatrixAux[Li][VecUpDown[i][3] - 2] = -t + (KnotMatrixAux[Li][VecUpDown[i][3] - 2])
-                        KnotMatrixAux[Li][VecUpDown[op][3] - 1] = t - 1 + (KnotMatrixAux[Li][VecUpDown[op][3] - 1])
-        #print(KnotMatrixAux)
-        KnotMatrix = []
-        for i in range(NC-1):   #matrix quadrada de ordem = (num. cruzamentos -1), preenchida com zeros, pois tem-se que deletar uma linha e uma coluna
-            KnotMatrix.append([0 for j in range(NC-1)])
-
-        for i in range(NC-1):
-            for j in range(NC-1):
-                KnotMatrix[i][j] = KnotMatrixAux[i][j]
-        #print('Matriz do Nó Final = ', KnotMatrix) #ver matriz do nó
-        ma = sympy.Matrix(KnotMatrix)
-        p_t = ma.det()
-        st = str(p_t)   #transforma p_t em uma string
-        if  st == 'nan':   #se p_t = nan, é porque ocorreu erro no cálculo do determinante, e assim aplicar o método LU para obter o determinante
-            p_t = ma.det(method='lu').simplify()  #usa o méthodo LU para o calc. do determinante
-            p_t = p_t.expand()   #para expandir o polinômio, 'lu' retorna polinômio sem simplificar
-
-        # Aqui proc para obter o polinômio de alexander a partir de P(t) = determinante da matrix quadrada de ordem (n-1)
-        if p_t.subs(t, 1) == -1:  #para garantir que P(1)=1.
-            p_t = -p_t
-        p1 = (t**J)*p_t
-        p2 = p1.subs(t, 1/t)
-        p3 = p1-p2
-        i = 1
-        q = 1
-        if p_t == 1:
-            display("Knot determinant: D = " + str(1), target="demo", append=True)
-            display("Alexander Polynomial: p(t) = " + str(1), target="demo", append=True)
-        if p_t != 1:
-            while q != 0:   #intercalando j = -i e j = i, até encontrar polinomio de alexander
-                p4=(p3.subs(J, -i)).simplify()
-                if p4 == 0:
-                    P = p1.subs(J,-i)
-                    display("Knot determinant: D = " + str(abs(P.subs(t, -1))), target="demo", append=True)
-                    display("Alexander Polynomial: p(t) = " + str(P.expand()), target="demo", append=True)
-                    break
-                p4 = (p3.subs(J, i)).simplify()
-                if p4 == 0:
-                    P = p1.subs(J, i)
-                    display("Knot determinant: D = " + str(abs(P.subs(t, -1))), target="demo", append=True)
-                    display("Alexander Polynomial: p(t) = " + str(P.expand()), target="demo", append=True)
-                    break
-                i = i+1
-        return ma
-</py-script>
+    
 </body>
 </html>
