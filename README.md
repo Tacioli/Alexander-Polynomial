@@ -8,7 +8,9 @@
 
 4. Click "Alexander Polynomial" button to calculate polynomial Alexander of knot;
 
-5. The "Save diagram" button stores the cartesian coordinates of the vertex and the choices of the segments that passed over. 
+5. The "Save diagram" button stores the cartesian coordinates of the vertex and the choices of the segments that passed over.
+
+6. adicionar mais instruções aqui.....
 
 
 
