@@ -1,0 +1,729 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Alexander Polynomial via Pyscript </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!--<script                 src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>-->
+    
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+    
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.03.1/pyscript.css" />
+    
+    <script defer src="https://pyscript.net/releases/2023.03.1/pyscript.js"></script>
+    
+    <meta name="description" content="math.js | basic usage">
+    <script src="https://unpkg.com/mathjs/lib/browser/math.js"></script>
+
+    <link rel="stylesheet" href="style.css"/>
+    <script src="intersect_circle_line.js">0</script>
+
+    
+<!-- ===================================================================================================================================== -->
+</head>
+<!-- ===================================================================================================================================== -->
+<body>
+    <!--<py-config src="./pyscript.toml"></py-config>-->
+    <py-script src="./main.py"></py-script>
+
+    <py-config>
+        packages = ["sympy"]
+    </py-config>
+<!-- ===================================================================================================================================== -->
+<div id = "id_div_container" class="div_container">
+    <div id="ponto"></div>
+
+    <div id="myDIV" style="visibility: hidden;">    
+        Some instructions:
+        1. Sketch diagram with left mouse click;
+        2. Move mouse to first point to be asked close diagram;
+        3. Make choose to get knot diagram;
+        4. Click "Alexander Polynomial" button to calculate polynomial Alexander of knot;
+        5. The "Save diagram" button stores the cartesian coordinates of the vertex and the choices of the segments that passed over. 
+        6. More detailed instructions see homepage https://www.github   
+    </div>
+    
+    <canvas id="canvas_drawing" width="1155" height="650"></canvas>
+    <div class="column" style="background-color:#aaa;">
+        <button id="btn_PolyAlexander" py-click="PolyAlexander_OnClk()" type="button" class="btn btn-primary">
+            <span class="spinner-border text-muted"></span>
+            Alexander Polynomial
+        </button>
+        <button id="btn_LoadDiagram"    onclick="LoadDiagram()" type="button" class="btn btn-primary">Load diagram</button>
+        <button id="btn_KnotSemMouse"   onclick="DiagramKnot()" type="button" class="btn btn-primary" style="display:none" >knot Sem Mouse</button>
+        <button id="btn_NewKnot"        onclick="NewKnot()"     type="button" class="btn btn-primary">New knot</button>
+        <button id="btn_Alex"           onclick="Alex()"       type="button" class="btn btn-primary" style="display:none" >Alex</button>
+        <button id="btn_save"           onclick="save()"       type="button" class="btn btn-primary" >Save diagram</button>
+        <button id="btn_help"           onclick="help()"       type="button" class="btn" style="float: right;"  >Help</button>
+                <input type="file" id="file_data_diagram" accept=".txt" style="display:none"/>
+        <h5 id="text_coord_xy">(x,y)</h5>
+        
+    </div>
+    <div class="column2" style="background-color:#bbb;">
+        <h4 id="WantConnect"> </h4>
+    </div>
+    <div class="column3" style="background-color:#aaa;">
+        <button id="btn_Yes" onclick="YesClick()" type="button" class="btn btn-primary">Yes</button>
+        <button id="btn_No"  onclick="NoClick()"  type="button" class="btn btn-primary">No</button>
+    </div>
+    <dialog id="Dialog_closeKnot" style="opacity: 0.3">
+        <p>Close?</p>
+        <form method="dialog">
+            <button class="button-close" onclick="DiagramKnot()" >Yes</button>
+            <button class="button-close" onclick="OK=0">No</button>
+        </form>
+    </dialog>
+    <h4 id="demo"> </h4>
+</div>
+<br>
+<br>
+
+
+
+
+<!-- ===================================================================================================================================== -->
+
+<script>//dot blink function
+    const ponto = document.querySelector('#ponto');
+    function blink() {
+        ponto.style.opacity = ponto.style.opacity === '1' ? '0' : '1';
+    }
+    setInterval(blink, 500); // blink each 500ms
+</script>
+
+<script>
+function help() {
+    let x = document.getElementById('myDIV');
+    if (x.style.visibility === 'hidden') {
+        x.style.visibility = 'visible';
+    } else {
+        x.style.visibility = 'hidden';
+    }
+}
+</script>
+
+<script> //https://katlas.org/wiki/K11a1
+let canvasEl = document.querySelector('#canvas_drawing'); //"canvas_drawing" is the "id" of "canvas" defined in html body (<canvas> is a html object)
+let ctx = canvasEl.getContext('2d');  //getContext('2d')  allows us drawing 2d geometry
+ctx.fillStyle='blue' ; //text color (color of number vértices)
+let OK=0;
+xc = canvasEl.clientWidth;  //width of canvas
+yc = canvasEl.clientHeight;
+//............................................................................................................................
+canvasEl.addEventListener('mousemove', (MouseM) => {//get (x,y)-mouse move position
+xM = MouseM.offsetX;
+yM = MouseM.offsetY;
+document.getElementById("text_coord_xy").innerHTML = "(x,y)= (" +(xM - xc / 2 ) +"," + (-yM +yc /2 ) +")" //move mouse coord. cartesian
+    if (OK==0){
+        if (m>2){
+            if (((Sx[0]-7 < xM) && (xM < Sx[0]+7)) && ((Sy[0]-7 < yM) && (yM < Sy[0]+7))){//tolerancia da proximidade do mouse ao primeiro ponto
+                Dialog_closeKnot.style.left = Sx[0] + "px";
+                Dialog_closeKnot.style.top = Sy[0] + "px"
+                window.Dialog_closeKnot.showModal() //se a tolerância for ultrapassada, então a caixinha de diálogo para fechar o nó aparecerá
+                OK = 1
+            }
+        }
+    }
+})
+//............................................................................................................................
+
+//............................................................................................................................
+canvasEl.addEventListener('click', (MouseC) => {//get (x,y)-mouse click position
+    u1 = MouseC.offsetX;  // x-coordinate of mouseclick
+    v1 = MouseC.offsetY;
+    if (newKnot == 1) {//if newKnot = 1, start the construction of knot diagram
+        m = m+1
+        x1 = MouseC.offsetX;  // x-coordinate of mouseclick
+        y1 = MouseC.offsetY;
+        z1 = x1 - xc / 2  // transform screen coordinates to cartesian coordinates (with origin (0,0) in the center of canvas)
+        w1 = -y1 + yc / 2
+        Sx.push(x1) //push() add new item to the final of array
+        Sy.push(y1)
+        Cx.push(z1)
+        Cy.push(w1)
+        Cxy.push([z1,w1])//used to save the knot diagram
+        ctx.fillStyle='blue' //color of vertex text (canvas)
+        ctx.font = "20px serif";  //vertex text font size (canvas)
+        ctx.fillText(m, x1 + 5, y1 + 5); //vertex text position 
+        ctx.lineWidth = 2; 
+        i = i + 1
+
+        if (i > 1) {//if number points > 1, the construction of the diagram starts
+            ctx.beginPath()
+            ctx.moveTo(x11, y11)
+            ctx.lineTo(x1, y1)
+            ctx.stroke()
+        }
+        x11 = x1;
+        y11 = y1;
+    }
+    if (knot_closed==1) {//performs the choice change at intersections only if the knot is closed and asked about all intersections
+        for(let i = 0; i < VD2.length; i++){
+            ep=Math.pow(VD2[i][5]-u1,2)+Math.pow(VD2[i][6]-v1,2);
+            ep=Math.pow(ep,1/2)
+            if (ep < 5) {//proximity of the click to the intersection point
+                document.getElementById("demo").innerHTML = ""
+                if (VecUpDown[Index_v[i]][0] == VecUpDown[Index_v[i]][2] ) {//swaps the index of the segment that passed over
+                    VecUpDown[Index_v[i]][2] =  VecUpDown[Index_v[i]][1];
+                    VecUpDown[Index_op[i]][2] = VecUpDown[Index_v[i]][1];
+                    VecIndexUp[i]=VecUpDown[Index_v[i]][1];
+                    r = 8
+                    ctx.fillStyle='#ffe4c4'
+                    ctx.beginPath()
+                    ctx.ellipse(VD2[i][5],VD2[i][6], r, r,  Math.PI/4, 0, 2*Math.PI)  //clears a region around the intersection
+                    ctx.fill()
+
+                    //p_i returns both params. of the intersection of the circle (x-z1)^2+(y-z1)^2=r^2 with segment A_iA_i+1
+                    p_i = IntersectCircleLine(VD2[i][3], VD2[i][4], r, VD2[i][11], VD2[i][12], VD2[i][13], VD2[i][14])
+                    //Now convert to screen coordinates and connect these two points to close the desired portion of the segment.
+                    xi = VD2[i][11] + p_i[0] * (VD2[i][13] - VD2[i][11])
+                    yi = VD2[i][12] + p_i[0] * (VD2[i][14] - VD2[i][12])
+                    Xi = xi + xc / 2
+                    Yi = -yi + yc / 2
+
+                    xii = VD2[i][11] + p_i[1] * (VD2[i][13] - VD2[i][11])
+                    yii = VD2[i][12] + p_i[1] * (VD2[i][14] - VD2[i][12])
+                    Xii = xii + xc / 2
+                    Yii = -yii + yc / 2
+
+                    ctx.beginPath()
+                    ctx.moveTo(Xi, Yi)
+                    ctx.lineTo(Xii, Yii) //segment that joins the interrupted segment
+                    ctx.stroke()
+                }else{
+                    VecUpDown[Index_v[i]][2] =  VecUpDown[Index_v[i]][0];
+                    VecUpDown[Index_op[i]][2] = VecUpDown[Index_v[i]][0]; 
+                    VecIndexUp[i]=VecUpDown[Index_v[i]][0];
+                    r = 8
+                    ctx.fillStyle='#ffe4c4'
+                    ctx.beginPath()
+                    ctx.ellipse(VD2[i][5],VD2[i][6], r, r,  Math.PI/4, 0, 2*Math.PI)  
+                    ctx.fill()
+                    p_i = IntersectCircleLine(VD2[i][3], VD2[i][4], r, VD2[i][7], VD2[i][8], VD2[i][9], VD2[i][10])
+
+                    xi = VD2[i][7] + p_i[0] * (VD2[i][9] - VD2[i][7])
+                    yi = VD2[i][8] + p_i[0] * (VD2[i][10] - VD2[i][8])
+                    Xi = xi + xc / 2
+                    Yi = -yi + yc / 2
+
+                    xii = VD2[i][7] + p_i[1] * (VD2[i][9] - VD2[i][7])
+                    yii = VD2[i][8] + p_i[1] * (VD2[i][10] - VD2[i][8])
+                    Xii = xii + xc / 2
+                    Yii = -yii + yc / 2
+
+                    ctx.beginPath()
+                    ctx.moveTo(Xi, Yi)
+                    ctx.lineTo(Xii, Yii) 
+                    ctx.stroke()
+                }
+            }   
+        }
+        for(let k = 0; k < (2*(VD2.length)); k++){
+            VecUpDown[k][3]=0;
+        } 
+    }
+    }
+)
+</script>
+
+<!-- ===================================================================================================================================== -->
+<script>//save diagram knot
+    document.getElementById('btn_save').addEventListener('click', async function() {
+    Cxy.push(VecIndexUp);//VecIndexUp = array with indices of the segments that passed over
+    const dados = Cxy;
+    const dadosString = dados.join('\n');
+    try {
+        // Options for the dialog box, in this case only txt files
+        const options = {
+            types: [
+                {
+                    description: 'Files text de texto',
+                    accept: {
+                        'text/plain': ['.txt'],
+                    },
+                },
+            ],
+        };
+
+        // Request file system access
+        const handle = await window.showSaveFilePicker(options);
+
+        // Create a file write object
+        const writable = await handle.createWritable();
+
+        // Write data to file
+        await writable.write(dadosString);
+        
+        // Finish writing and close the file
+        await writable.close();
+    } catch (error) {
+        console.error('Error to save file:', error);
+    }
+    Cxy.pop();
+});
+</script>
+
+<script>
+    function disabled_button(id_button, true_or_false){// function to disabled/enabled button by id="id_button"
+        document.getElementById(id_button).disabled = true_or_false;
+    }
+</script>
+<!-- ===================================================================================================================================== -->
+
+<script>
+    // Function to read the diagram and sketch the knot.
+function ReadDataDiagram(file) { // Receives the file as a parameter
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        NewKnot();
+        const text = event.target.result;
+        const lines = text.split('\n');
+
+        num_lines = lines.length;
+
+        for (const line of lines) {
+            const parts = line.split(",");
+            q0=parseFloat(parts[0]);
+            q1=parseFloat(parts[1]);
+            Cx.push(q0);
+            Cy.push(q1);
+            Cxy.push([q0,q1])
+            
+        }
+        Cx.pop(); // Remove the last item of array
+        Cy.pop();
+        Cxy.pop();
+        const Chooses = lines[num_lines - 1]; // last line
+        ChoosesUp = Chooses.split(",").map(parseFloat);
+        SketchDiagram();
+    };
+    reader.readAsText(file);
+};
+
+var fileInput = document.getElementById('file_data_diagram');//Gets the file input element
+
+function LoadDiagram(event) {
+    document.getElementById("file_data_diagram").click();
+    const file = event.target.files[0];
+    if (file) {
+        ReadDataDiagram(file); // Calls the ReadDataDiagram function with the selected file
+    } else {
+        // User has deselected the file, then do nothing
+    }
+    fileInput.value=''; 
+}
+
+fileInput.addEventListener('change', LoadDiagram);// Add event listener back to file input
+</script>
+
+<script> 
+function SketchDiagram(){
+    for (let i = 0; i < Cx.length; i++) {
+        z1 = Cx[i];
+        w1 = Cy[i];
+        x1 =  z1+xc/2;     
+        y1 = -w1+yc/2;
+
+        Sx.push(x1); 
+        Sy.push(y1);
+    }
+    
+    for (let k = 0; i < Sx.length; k++) {
+        ctx.font = "20px serif";  
+        ctx.fillText(k+1, Sx[k] + 5, Sy[k] + 5);
+        ctx.lineWidth = 2
+        i = i + 1
+        ctx.beginPath()
+        ctx.moveTo(Sx[k]  , Sy[k])
+        ctx.lineTo(Sx[k+1], Sy[k+1])
+        ctx.stroke()
+    }
+    
+    btn_KnotSemMouse.click();
+
+    btn_Alex.click();
+}
+</script>
+
+<script>//start script function DiagramKnot
+function DiagramKnot() {//this function close the knot and start the questions about intersections. (called automatically when the diagram is closed by user)
+    ponto.style.visibility= 'visible';
+    document.getElementById("btn_Yes").disabled = false;
+    document.getElementById("btn_No").disabled = false;
+    newKnot = -1;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(Sx[0],Sy[0]); //connect the first with de last point (to close the knot diagram)
+    ctx.stroke();
+    //-------------------- starting to find the intersections between the segments
+    let Var, Paramt1, num_I, done,  r
+    //Var: used to labeled the name of arcs of knot. num_I: indicate the number of intersections
+    done = false;
+    Paramt1 = [];  //this array store all information for each intersection point
+    num_I = 0;
+    numpoints=Cy.length;  //get the number of vertices of diagram
+    
+    Sx.push(Sx[0]);  //to close the diagram, the last point coincide with the firs point
+    Sy.push(Sy[0]);
+    Cx.push(Cx[0]);
+    Cy.push(Cy[0]);
+
+    //...................................................................................................................................................
+
+    for (let i = 0; i < numpoints; i++) {
+        a1 = Cx[i];
+        b1 = Cy[i];    //cartesian coordinate of A_i-click
+        a2 = Cx[i+1];
+        b2 = Cy[i+1];  //cartesian coordinate of A_{i+1}-click
+        num_I = 0;
+        Paramt1 = [];
+        done = false;
+        for (let j = 0; j < numpoints; j++) {
+            if (i != j) {
+                // i!=j: intersection of adjacent segments does not matter
+                c1 = Cx[j];  //cartesian coordinate of A_j-click
+                d1 = Cy[j];
+                c2 = Cx[j+1]; //cartesian coordinate of A_{j+1}-click
+                d2 = Cy[j+1];
+                t1 = (a1*d1-a1*d2-b1*c1+b1*c2+c1*d2-c2*d1)/(a1*d1-a1*d2-a2*d1+a2*d2-b1*c1+b1*c2+b2*c1-b2*c2);
+                t2 = -(a1 * b2 - a1 * d1 - a2 * b1 + a2 * d1 + b1 * c1 - b2 * c1) / (a1 * d1 - a1 * d2 - a2 * d1 + a2 * d2 - b1 * c1 + b1 * c2 + b2 * c1 - b2 * c2);
+
+                if ((0 < t1 && t1 < 1) && (0 < t2 && t2 < 1))  {//then there was intersection between the segments
+                    done = true;
+                    num_I = num_I+1;
+                    z1 =  a1+t1*(a2-a1); //local variable of cartes. x-coord. of intersection
+                    w1 =  b1+t1*(b2-b1);
+                    xa =  z1+xc/2;      //local variabel of screen x-coord. of intersection
+                    ya = -w1+yc/2;
+                    
+                    Paramt1.push([t1, i+1, j+1, z1, w1, xa, ya, a1, b1, a2, b2, c1, d1, c2, d2]); //store all information of each intersection point
+                    r = 8;
+                    ctx.fillStyle='#ffe4c4';
+                    ctx.beginPath();
+                    ctx.ellipse(xa,ya, r, r,  Math.PI/4, 0, 2*Math.PI);  //clears a region around the intersection
+                    ctx.fill();
+                }
+              }
+            }
+        
+        for (let i =0; i < (num_I-1); i++){//sorts the Paramt1 list according to the ascending order of the t1 parameters
+            for (j = i+1; j < num_I; j++){ //This is important to move through the diagram naturally
+                if (Paramt1[j][0] < Paramt1[i][0]){
+                    aux = Paramt1[i]
+                    Paramt1[i] = Paramt1[j]
+                    Paramt1[j] = aux
+                }
+            }
+        }
+        
+        if (done == true){//VD array carries information only related to intersections
+            for (let n =0; n < Paramt1.length; n++){
+                VD.push(Paramt1[n]) 
+            }
+        }
+        
+    }
+    
+    //-------------------------------------------------------------------------
+
+    NC = VD.length/2 //NC = number of intersections of the node diagram; // = integer division
+    if (NC == 0){
+        disabled_button("btn_Yes", "true")
+        disabled_button("btn_No", "true")
+        ponto.style.visibility= 'hidden';
+        document.getElementById("demo").innerHTML = "Knot determinant: D = 1 <br> Alexander polynomial: p(t) = 1"
+    }
+    dNC = 2*NC
+
+    //=======================================================================================================================
+    q=-1
+    for (let i = 0; i < dNC; i++) {//create an array with only the indices that intersected
+        for (let k = i; k < dNC; k++) {
+            if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])) {//search for vectors v_i with [i,j] permuted, that is, search for the opposite vector
+                q = q + 1
+                VecIndex_I[q] = VD[i][1] //VecIndex_I = array only with the indices I that intersected
+                Index_v.push(i)  // store the indexes  of i-ésima intersection
+                Index_op.push(k) // store the indexes  of k-ésima intersection opposite
+            }
+        }
+    }
+    //=======================================================================================================================
+    for(let i=0; i < dNC; i++){ //Creates a matrix (6 x dNC) filled with zeros
+        VecUpDown[i]=[]
+        for(let j=0; j < 6; j++){
+            VecUpDown[i][j]=0
+        }
+    }
+    //=======================================================================================================================
+    //VecUpDown[0] stores the index i of the segment I_i, formed by the points A_i and A_{i+1}
+    //VecUpDown[1] stores the index j of the segment I_j, formed by the points A_j and A_{j+1}
+    //VecUpDown[2] save index i if I_i passes over I_j and save index j if I_j passes over I_i
+    //VecUpDown[3] stores numbers that correspond to variables (arc names), 1--> a, 2-->b, ...of a knot
+    //VecUpDown[4] = +1 if the determinant referring to the third coordinate of the vector product, ui= vec(A_iA_{i+1}) with wj=vec(A_iA_j) is positive.
+    //             = -1 if the determinant referring to the third coordinate of the vector product, ui= vec(A_iA_{i+1}) with wj=vec(A_iA_j) is negative.
+    //             +1 and -1 tell you which arc is to the right or left of the segment that passes over each intersection.
+
+    // VecUpDown[5] stores the position of the opposite vector, useful for obtain the knot matrix.
+    //***********************************************************************************************
+    k=-1
+    ponto.style.left = (VD[0][5]-3)+'px';
+    ponto.style.top =  (VD[0][6]+3)+'px';
+    document.getElementById("WantConnect").textContent = "Do you want to link the segment portion " + VD[0][1] + '______' + (VD[0][1]+1)+"?";
+    
+    VD2=[];//vector with information about intersections without repetition
+    for (let i = 0; i < dNC; i++) {//create an array with only the indices that intersected
+        for (let k = i; k < dNC; k++) {
+            if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])) {//search for vectors v_i with [i,j] permuted, that is, search for the opposite vector
+                VD2.push(VD[i]);//Create a matrix with intersection data (excluding the repetitions that occur in VD, as in VD we pass through the intersection twice)
+            }
+        }
+    }
+    return VD, VD2, VecUpDown, dNC, k, VecIndex_I  
+}//End function DiagramKnot
+</script>
+
+
+<script>
+function YesClick(){
+    start_position: while (true) {
+        k=k+1                     // not always k = cont (note that cont is used in the question of which segment to use).
+        if (VecUpDown[k][2] != 0) continue start_position
+        break;
+    }
+    cont = cont+1 //counts the number of clicks (i.e. the number of intersection = dNC/2)
+    if (cont < dNC/2){
+        ponto.style.left = (VD[Index_v[cont]][5]-2)+'px';
+        ponto.style.top =  (VD[Index_v[cont]][6]+2)+'px';
+    }
+                
+    if (cont == dNC/2){
+        ponto.style.visibility='hidden'
+    }
+
+    document.getElementById("WantConnect").textContent = "Do you want to link the segment portion " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
+
+    if (cont==(dNC/2)){
+        document.getElementById("btn_Yes").disabled = true;
+        document.getElementById("btn_No").disabled = true;
+        document.getElementById("WantConnect").textContent =""
+        knot_closed=1 //means that knot closed
+    }
+    xa    = VD[k][5]    //xa and ya are (screen) coordinates of the segment intersections, used to create the circle
+    ya    = VD[k][6]
+    ui_x  = VD[k][9]-VD[k][7]      //vetor vec(A_iA_{i+1})
+    ui_y  = VD[k][10]-VD[k][8]
+    wj_x  = VD[k][11]-VD[k][7]     //vetor vec(A_iA_{j})
+    wj_y  = VD[k][12]-VD[k][8]
+    sinal = ui_x*wj_y-ui_y*wj_x    //used to describe the equation regarding each intersection
+            
+    if (sinal > 0) {//orientation +
+        VecUpDown[k][4] = 1
+    } else {
+        VecUpDown[k][4] = -1 //orientation -
+    }
+    r = 9        //disc radius
+    VecUpDown[k][0] = VD[k][1]  //VD[k][1] = i
+    VecUpDown[k][1] = VD[k][2]  //VD[k][2] = j
+    VecUpDown[k][2] = VD[k][1]  //This means that segment I_i passed over segment I_j
+    VecIndexUp.push(VD[k][1])
+    //p_i returns both params. of the intersection of the circle (x-z1)^2+(y-z1)^2=r^2 with segment A_iA_i+1
+    p_i = IntersectCircleLine(VD[k][3], VD[k][4], r, VD[k][7], VD[k][8], VD[k][9], VD[k][10])
+    //Now, convert to screen coordinate and connect these two points to close the desired portion of the segment
+    xi = VD[k][7] + p_i[0] * (VD[k][9] - VD[k][7])
+    yi = VD[k][8] + p_i[0] * (VD[k][10] - VD[k][8])
+    Xi = xi + xc / 2
+    Yi = -yi + yc / 2
+
+    xii = VD[k][7] + p_i[1] * (VD[k][9] - VD[k][7])
+    yii = VD[k][8] + p_i[1] * (VD[k][10] - VD[k][8])
+    Xii = xii + xc / 2
+    Yii = -yii + yc / 2
+
+    ctx.beginPath();
+    ctx.moveTo(Xi, Yi);
+    ctx.lineTo(Xii, Yii); //segment that joins the interrupted segment
+    ctx.stroke();
+    
+    tex=""
+    for (let i = k; k < dNC; i++) {
+        if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])){//search for vectors v_i with [i,j] permuted, that is, search for the opposite vector
+            VecUpDown[i][0] = VD[k][2]; //once found opposite in VD then we just update in VecUpDown
+            VecUpDown[i][1] = VD[k][1];
+            VecUpDown[i][2] = VD[k][1];
+            VecUpDown[k][5] = i;        // stores the position that is the opposite vector
+        }
+        if (i == dNC-1 && cont==(dNC/2)) {
+            document.getElementById("btn_PolyAlexander").disabled = false;
+        } 
+    }
+}
+</script>
+
+<script>
+function NoClick(){
+    start_position: while (true) {
+        k=k+1;
+        if (VecUpDown[k][2] != 0) continue start_position
+        break;
+    }
+    cont = cont+1; 
+    if (cont < dNC/2){
+        ponto.style.left = (VD[Index_v[cont]][5]-2)+'px';
+        ponto.style.top =  (VD[Index_v[cont]][6]+2)+'px';
+    }
+                
+    if (cont == dNC/2){
+        ponto.style.visibility='hidden';
+    }
+    
+    document.getElementById("WantConnect").textContent = "Do you want to link the segment portion " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
+
+    if (cont==(dNC/2)){
+        document.getElementById("WantConnect").textContent ="";
+        document.getElementById("btn_Yes").disabled = true;
+        document.getElementById("btn_No").disabled = true;
+        knot_closed=1; 
+    }
+    xa    = VD[k][5];  
+    ya    = VD[k][6];
+    
+    ui_x  = VD[k][9]-VD[k][7];
+    ui_y  = VD[k][10]-VD[k][8];
+    wj_x  = VD[k][11]-VD[k][7];  
+    wj_y  = VD[k][12]-VD[k][8];
+    sinal = ui_x*wj_y-ui_y*wj_x; 
+    
+
+    if (sinal > 0) {
+        VecUpDown[k][4] = 1;
+        } else {
+        VecUpDown[k][4] = -1; 
+        }
+    VecUpDown[k][0] = VD[k][1];
+    VecUpDown[k][1] = VD[k][2];
+    VecUpDown[k][2] = VD[k][2];
+    VecIndexUp.push(VD[k][2]);
+    r=9;
+    p_i = IntersectCircleLine(VD[k][3], VD[k][4], r, VD[k][11], VD[k][12], VD[k][13], VD[k][14]);
+    xi = VD[k][11] + p_i[0] * (VD[k][13] - VD[k][11]);
+    yi = VD[k][12] + p_i[0] * (VD[k][14] - VD[k][12]);
+    Xi = xi + xc / 2;
+    Yi = -yi + yc / 2;
+
+    xii = VD[k][11] + p_i[1] * (VD[k][13] - VD[k][11]);
+    yii = VD[k][12] + p_i[1] * (VD[k][14] - VD[k][12]);
+    Xii = xii + xc / 2;
+    Yii = -yii + yc / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(Xi, Yi);
+    ctx.lineTo(Xii, Yii);
+    ctx.stroke();
+
+    for (let i = k; k < dNC; i++) {
+        if ((VD[i][2] == VD[k][1]) && (VD[i][1] == VD[k][2])){
+            VecUpDown[i][0] = VD[k][2];
+            VecUpDown[i][1] = VD[k][1];
+            VecUpDown[i][2] = VD[k][2];
+            VecUpDown[k][5] = i;
+        }
+        if (i == dNC-1 && cont==(dNC/2)) {
+            document.getElementById("btn_PolyAlexander").disabled = false;
+        }
+    }
+}
+</script>
+
+<script>
+function Alex() {
+    let m = 0;
+    while (m < ChoosesUp.length ) {
+        if (ChoosesUp[m] == VecIndex_I[m]) {
+            document.getElementById("btn_Yes").click();
+            //btn_Yes.click()
+        } else {
+            btn_No.click();
+        }
+        m++;
+    }
+}
+</script>
+
+<script>
+function createObject(object, variableName){
+    //Bind a variable whose name is the string variableName to the object called 'object'
+    let execString = variableName + " = object"
+    console.log("Running '" + execString + "'");
+    eval(execString)
+}
+    
+</script>
+<script>
+    disabled_button("btn_Yes", "true"); //disabled = true:  button started disabled
+    disabled_button("btn_No", "true");
+    disabled_button("btn_PolyAlexander", "false")
+    ponto.style.visibility= 'hidden';
+
+    VD=[];  //double vector
+    var VecUpDown = new Array(6);
+    VecIndex_I=[]; // store the indexes i of intersections
+    VecIndexUp=[]; // store the indexes of segments passing by over in the intersection
+    var dNC;       // double of intersections
+    k=-1;
+    var cont;
+    cont=0;
+    KnotMatrixAux = [];
+    KnotMatrix = [];
+    i = 0; m = 0; let  newKnot= 1; let z1, w1; 
+    Sx = [];  // screen x coordinate of click
+    Sy = [];  // screen y coordinate of click
+    Cx = [];  // screen x converted in cartesian coordinate
+    Cy = [];  // screen y converted in cartesian coordinate
+    Cxy= [];  // screen x,y converted in cartesian coodinate
+    knot_closed=0; //means that the knot has not yet been finalized
+    Index_v=[];
+    Index_op=[];
+</script>
+
+<script>
+function NewKnot(){
+    //window.location.reload() //restart the program
+    ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);//clear the Canvas
+    i = 0; m = 0; newKnot= 1; 
+    Sx = [];  // screen x coordinate of click
+    Sy = [];  // screen y coordinate of click
+    Cx = [];  // screen x converted in cartesian coordinate
+    Cy = [];  // screen y converted in cartesian coordinate
+    Cxy= [];  //screen x,y converted in cartesian coodinate
+    knot_closed=0; 
+    KnotMatrixAux=[];
+    OK=0;
+    disabled_button("btn_Yes", "true"); 
+    disabled_button("btn_No", "true");
+    disabled_button("btn_PolyAlexander", "true");
+    ponto.style.visibility= 'hidden';
+
+    VD=[];
+    VecUpDown = [];
+    VecIndex_I=[];  // store the indexes i of intersections
+    VecIndexUp=[];  // store the indexes of segments passing by Up in the intersection
+    Index_v=[];  // store the indexes  of k-ésima intersection
+    Index_op=[]; // store the indexes of opposite of k-ésima intersection (pois passamos duas vezes pela mesma interseção ao percorrer o nó)
+    dNC = undefined;        // double of intersections
+    k=-1;
+    cont = 0;
+    KnotMatrixAux = [];
+    KnotMatrix = [];
+    ctx.fillStyle='blue';
+    document.getElementById("demo").innerHTML = ""; 
+    document.getElementById("WantConnect").textContent = "";
+}
+</script>    
+</body>
+</html>
