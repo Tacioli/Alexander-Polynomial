@@ -1,2 +1,0 @@
-name = "Alexander Polynomial via PyScript"
-packages = [ "sympy"]
