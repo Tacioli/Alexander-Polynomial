@@ -1,5 +1,9 @@
 # Analysis of HTML Code for Alexander Polynomial Calculation
 
+# Installing
+
+Click in the ling https://tacioli.github.io/Alexander-Polynomial/ to use the application.
+
 This HTML code is designed to create an interactive web application that empowers users to explore the fascinating world of knot theory. Its primary function is to facilitate the drawing of knot diagrams and the automated calculation of their corresponding Alexander polynomials. The Alexander polynomial is a crucial knot invariant used to distinguish and classify different types of knots, making it a cornerstone of topological studies.
 
 ## Key Features and Functionalities:
