@@ -430,8 +430,9 @@ function NoClick(){
         ponto.style.visibility='hidden';
     }
     
-    document.getElementById("WantConnect").textContent = "Do you want to link the segment portion " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
+    document.getElementById("WantConnect").textContent = "Would you like to connect vertices " + VecIndex_I[cont] + ' and ' + (VecIndex_I[cont]+1)+"?";
 
+    
     if (cont==(dNC/2)){
         document.getElementById("WantConnect").textContent ="";
         document.getElementById("btn_Yes").disabled = true;
