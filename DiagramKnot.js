@@ -120,7 +120,7 @@ function DiagramKnot() {//this function close the knot and start the questions a
     k=-1
     ponto.style.left = (VD[0][5]-3)+'px';
     ponto.style.top =  (VD[0][6]+3)+'px';
-    document.getElementById("WantConnect").textContent = "Do you want to link the segment portion " + VD[0][1] + '______' + (VD[0][1]+1)+"?";
+    document.getElementById("WantConnect").textContent = "Would you like to connect vertices " + VD[0][1] + ' and ' + (VD[0][1]+1)+"?";
     
     VD2=[];//vector with information about intersections without repetition
     for (let i = 0; i < dNC; i++) {//create an array with only the indices that intersected
