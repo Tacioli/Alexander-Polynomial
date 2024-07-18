@@ -46,7 +46,7 @@
         3. Make choose to get knot diagram;
         4. Click "Alexander Polynomial" button to calculate polynomial Alexander of knot;
         5. The "Save diagram" button stores the cartesian coordinates of the vertex and the choices of the segments that passed over. 
-        6. More detailed instructions see homepage https://www.github   
+        6. More detailed instructions see homepage https://tacioli.github.io/Alexander-Polynomial/
     </div>
     
     <canvas id="canvas_drawing" width="1155" height="650"></canvas>
@@ -88,25 +88,6 @@
 
 
 <!-- ===================================================================================================================================== -->
-
-<script>//dot blink function
-    const ponto = document.querySelector('#ponto');
-    function blink() {
-        ponto.style.opacity = ponto.style.opacity === '1' ? '0' : '1';
-    }
-    setInterval(blink, 500); // blink each 500ms
-</script>
-
-<script>
-function help() {
-    let x = document.getElementById('myDIV');
-    if (x.style.visibility === 'hidden') {
-        x.style.visibility = 'visible';
-    } else {
-        x.style.visibility = 'hidden';
-    }
-}
-</script>
 
 <script> //https://katlas.org/wiki/K11a1
 let canvasEl = document.querySelector('#canvas_drawing'); //"canvas_drawing" is the "id" of "canvas" defined in html body (<canvas> is a html object)
@@ -373,7 +354,7 @@ function YesClick(){
         ponto.style.visibility='hidden'
     }
 
-    document.getElementById("WantConnect").textContent = "Do you want to link the segment portion " + VecIndex_I[cont] + '______' + (VecIndex_I[cont]+1)+"?";
+    document.getElementById("WantConnect").textContent = "Would you like to connect vertices " + VecIndex_I[cont] + ' and ' + (VecIndex_I[cont]+1)+"?";
 
     if (cont==(dNC/2)){
         document.getElementById("btn_Yes").disabled = true;
@@ -591,6 +572,26 @@ function NewKnot(){
     document.getElementById("demo").innerHTML = ""; 
     document.getElementById("WantConnect").textContent = "";
 }
-</script>    
+</script>
+
+<script>//dot blink function
+    const ponto = document.querySelector('#ponto');
+    function blink() {
+        ponto.style.opacity = ponto.style.opacity === '1' ? '0' : '1';
+    }
+    setInterval(blink, 500); // blink each 500ms
+</script>
+
+<script>
+function help() {
+    let x = document.getElementById('myDIV');
+    if (x.style.visibility === 'hidden') {
+        x.style.visibility = 'visible';
+    } else {
+        x.style.visibility = 'hidden';
+    }
+}
+</script>
+
 </body>
 </html>
