@@ -570,13 +570,14 @@ function NewKnot(){
 
 <script>
 function help() {
+    document.getElementById("btn_save").click();
     let x = document.getElementById('myDIV');
     if (x.style.visibility === 'hidden') {
         x.style.visibility = 'visible';
     } else {
         x.style.visibility = 'hidden';
     }
-    document.getElementById("btn_save").click();
+    
 
     //document.addEventListener('DOMContentLoaded', (event) => {
       //  document.getElementById('btn_PolyAlexander').click(); 
