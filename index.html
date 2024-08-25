@@ -576,8 +576,9 @@ function help() {
     } else {
         x.style.visibility = 'hidden';
     }
-    document.getElementById('btn_PolyAlexander').click(); 
-    //PolyAlexander_OnClk();
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('btn_PolyAlexander').click(); 
+    });
 }
 </script>
 
