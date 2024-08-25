@@ -45,7 +45,7 @@ This manual provides a comprehensive guide for users to understand and effective
 
 5.  **Intalling:**
 
-    *   Click in the link \href{https://tacioli.github.io/Alexander-Polynomial/}{https://tacioli.github.io/Alexander-Polynomial/} to use the application.
+    *   Click in the link [https://tacioli.github.io/Alexander-Polynomial/](https://tacioli.github.io/Alexander-Polynomial/) to use the application.
 
 6.  **User-Friendly Interface:**
 
