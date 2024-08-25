@@ -35,7 +35,7 @@ This manual provides a comprehensive guide for users to understand and effective
 
     <figure>
        <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/10-61.png" alt="">
-       <figcaption>Figure 3. Intersection detection.</figcaption>
+       <figcaption>Figure 3. Alexander Polynomial.</figcaption>
     </figure>
 
 4.  **Diagram Persistence:**
