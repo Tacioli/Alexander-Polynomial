@@ -382,7 +382,7 @@ function YesClick(){
     VecIndexUp.push(VD[k][1])
     //p_i returns both params. of the intersection of the circle (x-z1)^2+(y-z1)^2=r^2 with segment A_iA_i+1
     p_i = IntersectCircleLine(VD[k][3], VD[k][4], r, VD[k][7], VD[k][8], VD[k][9], VD[k][10])
-    //Now, convert to screen coordinate and connect these two points to close the desired portion of the segment
+    //Now, convert to screen coordinates and connect these two points to close the desired portion of the segment
     xi = VD[k][7] + p_i[0] * (VD[k][9] - VD[k][7])
     yi = VD[k][8] + p_i[0] * (VD[k][10] - VD[k][8])
     Xi = xi + xc / 2
