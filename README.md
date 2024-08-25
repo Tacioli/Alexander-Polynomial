@@ -9,22 +9,34 @@ This manual provides a comprehensive guide for users to understand and effective
 
     *   Users can  draw knot diagrams directly on the canvas by clicking to establish vertices and connecting them with line segments.
     *   The interface dynamically labels each vertex as it is created, enhancing visual clarity and reference during the drawing process.
-    *   To close the diagram, the user must move the mouse over the first vertex. A dedicated modal dialog, the ``Close Knot" dialog (Figure \ref{Fig1}), prompts users to confirm the completion of their knot diagram. Upon confirmation, the script seamlessly connects the final vertex to the initial vertex, ensuring a closed loop structure that is fundamental to knot theory.
+    *   To close the diagram, the user must move the mouse over the first vertex. A dedicated modal dialog, the ``Close Knot" dialog (Figure 1.), prompts users to confirm the completion of their knot diagram. Upon confirmation, the script seamlessly connects the final vertex to the initial vertex, ensuring a closed loop structure that is fundamental to knot theory.
+    
+    <figure>
+       <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/Close%20diagram.png" alt="">
+       <figcaption>Figure 1. Knot diagram.</figcaption>
+    </figure>
 
 2.  **Intersection Detection and Resolution:**
 
     *   The script identifies and visually highlights points where line segments intersect within the knot diagram.
-    *   Through an interactive process, users are asked to choose which segment should pass over the other at each crossing point (Figure \ref{Fig2}). Visual aids, such as a blinking dot and highlighted segments, assist users in making these critical decisions.
+    *   Through an interactive process, users are asked to choose which segment should pass over the other at each crossing point (Figure 2). Visual aids, such as a blinking dot and highlighted segments, assist users in making these critical decisions.
+
+    <figure>
+       <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/Question.png" alt="">
+       <figcaption>Figure 2. Intersection detection.</figcaption>
+    </figure>
 
 3.  **Alexander Polynomial Calculation:**
 
     *   Once the knot diagram is finalized and all crossing relationships are established, the ``Alexander Polynomial" button becomes active.
-    *   Clicking this button initiates the execution of a Python script (`main.py') embedded within the HTML using \href{https://pyodide.org/en/stable/}{Pyodide} and \href{https://pyscript.net/}{PyScript}. After the calculation, the application displays the determinant, {\bf D $= |p(-1)|$}, and the Alexander polynomial, $p(t)$, see Figure \ref{Fig3}. ![Figure 1. Knot diagram.](https://github.com/Tacioli/Alexander-Polynomial/blob/main/Close%20diagram.png)
-    <figure>
-       <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/Close%20diagram.png" alt="Um lindo pôr do sol">
-       <figcaption>Figure 1. Knot diagram.</figcaption>
-    </figure>
+    *   Clicking this button initiates the execution of a Python script (`main.py') embedded within the HTML using \href{https://pyodide.org/en/stable/}{Pyodide} and \href{https://pyscript.net/}{PyScript}. After the calculation, the application displays the determinant, {\bf D $= |p(-1)|$}, and the Alexander polynomial, $p(t)$, see Figure 3. 
+
     *   If the user wants to change any intersection, just click on the intersection with the mouse to swap the choice.
+
+    <figure>
+       <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/10-61.png" alt="">
+       <figcaption>Figure 3. Intersection detection.</figcaption>
+    </figure>
 
 4.  **Diagram Persistence:**
 
