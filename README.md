@@ -60,7 +60,7 @@ This manual provides a comprehensive guide for users to understand and effective
 *   The script continuously updates a display element to show the current mouse coordinates as the user interacts with the canvas.
 *   Open only files in ".txt" format.
 *   When separately creating a ".txt" file of a diagram of a knot, make sure not to create blank lines.
-*   The Rolfsen Table of knots with up to 10 crossings is avaliable in [https://katlas.org/wiki/The_Rolfsen_Knot_Table](https://katlas.org/wiki/The_Rolfsen_Knot_Table)
+*   The Rolfsen Table of knots with up to 10 crossings is avaliable on [https://katlas.org/wiki/The_Rolfsen_Knot_Table](https://katlas.org/wiki/The_Rolfsen_Knot_Table)
 
 
 
