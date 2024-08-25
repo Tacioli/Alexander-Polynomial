@@ -44,7 +44,7 @@
             Alexander Polynomial
         </button>
         <button id="btn_LoadDiagram"    onclick="LoadDiagram()" type="button" class="btn btn-primary">Load diagram</button>
-        <button id="btn_KnotSemMouse"   onclick="DiagramKnot()" type="button" class="btn btn-primary" style="display:none" >knot Sem Mouse</button>
+        <button id="btn_KnotSemMouse"   onclick="DiagramKnot()" type="button" class="btn btn-primary" style="display:none" >knot_no_Mouse</button>
         <button id="btn_NewKnot"        onclick="NewKnot()"     type="button" class="btn btn-primary">New knot</button>
         <button id="btn_Alex"           onclick="Alex()"       type="button" class="btn btn-primary" style="display:none" >Alex</button>
         <button id="btn_save"           onclick="save()"       type="button" class="btn btn-primary" >Save diagram</button>
@@ -280,6 +280,7 @@ function LoadDiagram(event) {
     const file = event.target.files[0];
     if (file) {
         ReadDataDiagram(file); // Calls the ReadDataDiagram function with the selected file
+        PolyAlexander_OnClk();
     } else {
         // User has deselected the file, then do nothing
     }
