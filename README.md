@@ -40,8 +40,8 @@ This manual provides a comprehensive guide for users to understand and effective
 
 4.  **Diagram Persistence:**
 
-    *   The "Save Diagram" button allows users to preserve their work by saving the current knot diagram to a \verb".txt" file. This file stores both the vertex coordinates and the crossing choices made by the user.
-    *   The ``Load Diagram" button enables users to retrieve previously saved diagrams, fostering continued analysis, modification, or comparison.
+    *   The "Save Diagram" button allows users to preserve their work by saving the current knot diagram to a \textsc{.txt} \sffamily{.txt} file. This file stores both the vertex coordinates and the crossing choices made by the user.
+    *   The "Load Diagram" button enables users to retrieve previously saved diagrams, fostering continued analysis, modification, or comparison.
 
 5.  **Intalling:**
 
@@ -51,7 +51,7 @@ This manual provides a comprehensive guide for users to understand and effective
 
     *   The interface is built using Bootstrap, ensuring a clean, organized, and responsive layout.
     *   Interactive buttons trigger actions, while text element display the calculated Alexander polynomial.
-    *   A ``Help" button reveals a set of instructions, guiding users on how to effectively utilize the application's features.
+    *   A "Help" button reveals a set of instructions, guiding users on how to effectively utilize the application's features.
     *   The ``New knot" button clears the canvas.
 
 ## Additional Technical Details:
