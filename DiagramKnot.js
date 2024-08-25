@@ -24,18 +24,18 @@ function DiagramKnot() {//this function close the knot and start the questions a
 
     for (let i = 0; i < numpoints; i++) {
         a1 = Cx[i];
-        b1 = Cy[i];    //cartesian coordinate of A_i-click
+        b1 = Cy[i];    //cartesian coordinates of A_i-click
         a2 = Cx[i+1];
-        b2 = Cy[i+1];  //cartesian coordinate of A_{i+1}-click
+        b2 = Cy[i+1];  //cartesian coordinates of A_{i+1}-click
         num_I = 0;
         Paramt1 = [];
         done = false;
         for (let j = 0; j < numpoints; j++) {
             if (i != j) {
                 // i!=j: intersection of adjacent segments does not matter
-                c1 = Cx[j];  //cartesian coordinate of A_j-click
+                c1 = Cx[j];  //cartesian coordinates of A_j-click
                 d1 = Cy[j];
-                c2 = Cx[j+1]; //cartesian coordinate of A_{j+1}-click
+                c2 = Cx[j+1]; //cartesian coordinates of A_{j+1}-click
                 d2 = Cy[j+1];
                 t1 = (a1*d1-a1*d2-b1*c1+b1*c2+c1*d2-c2*d1)/(a1*d1-a1*d2-a2*d1+a2*d2-b1*c1+b1*c2+b2*c1-b2*c2);
                 t2 = -(a1 * b2 - a1 * d1 - a2 * b1 + a2 * d1 + b1 * c1 - b2 * c1) / (a1 * d1 - a1 * d2 - a2 * d1 + a2 * d2 - b1 * c1 + b1 * c2 + b2 * c1 - b2 * c2);
@@ -78,7 +78,7 @@ function DiagramKnot() {//this function close the knot and start the questions a
     
     //-------------------------------------------------------------------------
 
-    NC = VD.length/2 //NC = number of intersections of the node diagram; // = integer division
+    NC = VD.length/2 //NC = number of intersections of the knot diagram
     if (NC == 0){
         disabled_button("btn_Yes", "true")
         disabled_button("btn_No", "true")
@@ -95,10 +95,11 @@ function DiagramKnot() {//this function close the knot and start the questions a
                 q = q + 1
                 VecIndex_I[q] = VD[i][1] //VecIndex_I = array only with the indices I that intersected
                 Index_v.push(i)  // store the indexes  of i-ésima intersection
-                Index_op.push(k) // store the indexes  of k-ésima intersection opposite
+                Index_op.push(k) // store the indexes  of k-ésima intersection opposite.
             }
         }
     }
+    
     //=======================================================================================================================
     for(let i=0; i < dNC; i++){ //Creates a matrix (6 x dNC) filled with zeros
         VecUpDown[i]=[]
@@ -116,6 +117,8 @@ function DiagramKnot() {//this function close the knot and start the questions a
     //             +1 and -1 tell you which arc is to the right or left of the segment that passes over each intersection.
 
     // VecUpDown[5] stores the position of the opposite vector, useful for obtain the knot matrix.
+    //Opposite vector: when traversing the entire knot diagram, we pass through the same intersection twice, 
+    //and the information from the second pass is stored in a vector that we call the opposite vector. 
     //***********************************************************************************************
     k=-1
     ponto.style.left = (VD[0][5]-3)+'px';
