@@ -52,14 +52,15 @@ This manual provides a comprehensive guide for users to understand and effective
     *   The interface is built using Bootstrap, ensuring a clean, organized, and responsive layout.
     *   Interactive buttons trigger actions, while text element display the calculated Alexander polynomial.
     *   A "Help" button reveals a set of instructions, guiding users on how to effectively utilize the application's features.
-    *   The ``New knot" button clears the canvas.
+    *   The "New knot" button clears the canvas.
 
 ## Additional Technical Details:
 
-*   Buttons are dynamically enabled or disabled based on the current state of the knot diagram (e.g., the ``Alexander Polynomial" button remains disabled until the diagram is closed and all crossings are resolved).
+*   Buttons are dynamically enabled or disabled based on the current state of the knot diagram (e.g., the "Alexander Polynomial" button remains disabled until the diagram is closed and all crossings are resolved).
 *   The script continuously updates a display element to show the current mouse coordinates as the user interacts with the canvas.
 *   Open only files in ".txt" format.
 *   When separately creating a ".txt" file of a diagram of a knot, make sure not to create blank lines.
+*   The Rolfsen Table of knots with up to 10 crossings is avaliable in [https://katlas.org/wiki/The_Rolfsen_Knot_Table](https://katlas.org/wiki/The_Rolfsen_Knot_Table)
 
 
 
