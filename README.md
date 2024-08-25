@@ -9,7 +9,7 @@ This manual provides a comprehensive guide for users to understand and effective
 
     *   Users can  draw knot diagrams directly on the canvas by clicking to establish vertices and connecting them with line segments.
     *   The interface dynamically labels each vertex as it is created, enhancing visual clarity and reference during the drawing process.
-    *   To close the diagram, the user must move the mouse over the first vertex. A dedicated modal dialog, the ``Close Knot" dialog (Figure 1.), prompts users to confirm the completion of their knot diagram. Upon confirmation, the script seamlessly connects the final vertex to the initial vertex, ensuring a closed loop structure that is fundamental to knot theory.
+    *   To close the diagram, the user must move the mouse over the first vertex. A dedicated modal dialog, the "Close Knot" dialog (Figure 1), prompts users to confirm the completion of their knot diagram. Upon confirmation, the script seamlessly connects the final vertex to the initial vertex, ensuring a closed loop structure that is fundamental to knot theory.
     
     <figure>
        <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/Close%20diagram.png" alt="">
@@ -28,8 +28,8 @@ This manual provides a comprehensive guide for users to understand and effective
 
 3.  **Alexander Polynomial Calculation:**
 
-    *   Once the knot diagram is finalized and all crossing relationships are established, the ``Alexander Polynomial" button becomes active.
-    *   Clicking this button initiates the execution of a Python script (`main.py') embedded within the HTML using [Pyodide](https://pyodide.org/en/stable/) and [PyScript](https://pyscript.net/). After the calculation, the application displays the determinant, {\bf D $= |p(-1)|$}, and the Alexander polynomial, $p(t)$, see Figure 3. 
+    *   Once the knot diagram is finalized and all crossing relationships are established, the "Alexander Polynomial" button becomes active.
+    *   Clicking this button initiates the execution of a Python script ('main.py') embedded within the HTML using [Pyodide](https://pyodide.org/en/stable/) and [PyScript](https://pyscript.net/). After the calculation, the application displays the determinant,  $D = |p(-1)|$, and the Alexander polynomial, $p(t)$, see Figure 3. 
 
     *   If the user wants to change any intersection, just click on the intersection with the mouse to swap the choice.
 
@@ -40,7 +40,7 @@ This manual provides a comprehensive guide for users to understand and effective
 
 4.  **Diagram Persistence:**
 
-    *   The ``Save Diagram" button allows users to preserve their work by saving the current knot diagram to a \verb".txt" file. This file stores both the vertex coordinates and the crossing choices made by the user.
+    *   The "Save Diagram" button allows users to preserve their work by saving the current knot diagram to a \verb".txt" file. This file stores both the vertex coordinates and the crossing choices made by the user.
     *   The ``Load Diagram" button enables users to retrieve previously saved diagrams, fostering continued analysis, modification, or comparison.
 
 5.  **Intalling:**
