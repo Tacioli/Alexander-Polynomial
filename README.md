@@ -20,6 +20,10 @@ This manual provides a comprehensive guide for users to understand and effective
 
     *   Once the knot diagram is finalized and all crossing relationships are established, the ``Alexander Polynomial" button becomes active.
     *   Clicking this button initiates the execution of a Python script (`main.py') embedded within the HTML using \href{https://pyodide.org/en/stable/}{Pyodide} and \href{https://pyscript.net/}{PyScript}. After the calculation, the application displays the determinant, {\bf D $= |p(-1)|$}, and the Alexander polynomial, $p(t)$, see Figure \ref{Fig3}. ![Figure 1. Knot diagram.](https://github.com/Tacioli/Alexander-Polynomial/blob/main/Close%20diagram.png)
+    <figure>
+       <img src="https://github.com/Tacioli/Alexander-Polynomial/blob/main/Close%20diagram.png" alt="Um lindo pôr do sol">
+       <figcaption>Figure 1. Knot diagram.</figcaption>
+    </figure>
     *   If the user wants to change any intersection, just click on the intersection with the mouse to swap the choice.
 
 4.  **Diagram Persistence:**
