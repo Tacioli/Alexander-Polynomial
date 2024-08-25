@@ -40,7 +40,7 @@ This manual provides a comprehensive guide for users to understand and effective
 
 4.  **Diagram Persistence:**
 
-    *   The "Save Diagram" button allows users to preserve their work by saving the current knot diagram to a  <span style="font-family: sans-serif;">Texto em fonte sem serifa</span> file. This file stores both the vertex coordinates and the crossing choices made by the user.
+    *   The "Save Diagram" button allows users to preserve their work by saving the current knot diagram to a ".txt" file. This file stores both the vertex coordinates and the crossing choices made by the user.
     *   The "Load Diagram" button enables users to retrieve previously saved diagrams, fostering continued analysis, modification, or comparison.
 
 5.  **Intalling:**
@@ -58,8 +58,8 @@ This manual provides a comprehensive guide for users to understand and effective
 
 *   Buttons are dynamically enabled or disabled based on the current state of the knot diagram (e.g., the ``Alexander Polynomial" button remains disabled until the diagram is closed and all crossings are resolved).
 *   The script continuously updates a display element to show the current mouse coordinates as the user interacts with the canvas.
-*   Open only files in \verb|.txt| format.
-*   When separately creating a \verb|.txt| file of a diagram of a knot, make sure not to create blank lines.
+*   Open only files in ".txt" format.
+*   When separately creating a ".txt" file of a diagram of a knot, make sure not to create blank lines.
 
 
 
