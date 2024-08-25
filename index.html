@@ -271,6 +271,7 @@ function ReadDataDiagram(file) { // Receives the file as a parameter
         SketchDiagram();
     };
     reader.readAsText(file);
+    PolyAlexander_OnClk();
 };
 
 var fileInput = document.getElementById('file_data_diagram');//Gets the file input element
@@ -280,7 +281,7 @@ function LoadDiagram(event) {
     const file = event.target.files[0];
     if (file) {
         ReadDataDiagram(file); // Calls the ReadDataDiagram function with the selected file
-        PolyAlexander_OnClk();
+        
     } else {
         // User has deselected the file, then do nothing
     }
