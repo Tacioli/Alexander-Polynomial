@@ -29,7 +29,7 @@ This manual provides a comprehensive guide for users to understand and effective
 3.  **Alexander Polynomial Calculation:**
 
     *   Once the knot diagram is finalized and all crossing relationships are established, the ``Alexander Polynomial" button becomes active.
-    *   Clicking this button initiates the execution of a Python script (`main.py') embedded within the HTML using \href{https://pyodide.org/en/stable/}{Pyodide} and \href{https://pyscript.net/}{PyScript}. After the calculation, the application displays the determinant, {\bf D $= |p(-1)|$}, and the Alexander polynomial, $p(t)$, see Figure 3. 
+    *   Clicking this button initiates the execution of a Python script (`main.py') embedded within the HTML using [Pyodide](https://pyodide.org/en/stable/) and [PyScript](https://pyscript.net/). After the calculation, the application displays the determinant, {\bf D $= |p(-1)|$}, and the Alexander polynomial, $p(t)$, see Figure 3. 
 
     *   If the user wants to change any intersection, just click on the intersection with the mouse to swap the choice.
 
